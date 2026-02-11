@@ -1,4 +1,5 @@
 # game engine
+# I can push from vs code...
 # collision should be detected within an update of a Sprite
 # can't use "all sprites"
 # logical separation of elements, parse what's colliding with what.
