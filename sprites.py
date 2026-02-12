@@ -4,6 +4,19 @@ from settings import *
 
 vec = pg.math.Vector2
 
+# collision function - checks for collision between two entities
+# accessible among many sprites
+def collide_hit_rect(one, two):
+    return one.hit_rect.colliderect(two.rect)
+
+# function for colliding with walls
+# leverages power of hit rect
+def collide_with_walls(sprite, group, dir):
+    if dir == 'x':
+        hits = pg.sprite.spritecollide(sprite, group, False, collide_hit_rect)
+        print(hits)
+
+
 class Player(Sprite):
     def __init__(self, game, x, y):
         self.groups = game.all_sprites
@@ -15,6 +28,7 @@ class Player(Sprite):
         self.vel = vec(0,0)
         # TILESIZE as a multiplier for the game
         self.pos = vec(x,y) * TILESIZE
+        self.hit_rect = PLAYER_HIT_RECT
     
     def get_keys(self):
         # a vector to set velocity of player
