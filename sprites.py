@@ -11,12 +11,33 @@ def collide_hit_rect(one, two):
 
 # function for colliding with walls
 # leverages power of hit rect
+# checks for vertical/horizontal collision in order
+# sets position based on collision direction
 def collide_with_walls(sprite, group, dir):
     if dir == 'x':
         hits = pg.sprite.spritecollide(sprite, group, False, collide_hit_rect)
-        print(hits)
+        if hits:
+            #print("collided with wall from x dir")
+            # if Player is right of wall, stops it
+            if hits[0].rect.centerx > sprite.hit_rect.centerx:
+                sprite.pos.x = hits[0].rect.left - sprite.hit_rect.width / 2
+            # if Player is left of wall, stops it
+            if hits[0].rect.centerx < sprite.hit_rect.centerx:
+                sprite.pos.x = hits[0].rect.right + sprite.hit_rect.width / 2
+            # stops the Player in the x-direction
+            sprite.vel.x = 0
+            sprite.hit_rect.centerx = sprite.pos.x
+        if dir == 'y':
+            #print("collided with wall from y dir")
+            if hits[0].rect.centery > sprite.hit_rect.centery:
+                sprite.pos.y = hits[0].rect.top + sprite.hit_rect.height / 2
+            if hits[0].rect.centery < sprite.hit_rect.centery:
+                sprite.pos.y = hits[0].rect.bottom - sprite.hit_rect.height / 2
+            # stops the Player in the y-direction
+            sprite.vel.y = 0
+            sprite.hit_rect.centery = sprite.pos.y
 
-
+# player class to instantiate Player class
 class Player(Sprite):
     def __init__(self, game, x, y):
         self.groups = game.all_sprites
@@ -54,9 +75,11 @@ class Player(Sprite):
         # sets new position
         self.rect.center = self.pos
         self.pos += self.vel * self.game.dt
-        #self.rect.x += 1
-        #if self.rect.x > WIDTH:
-        #    self.rect.x -= 1
+        self.hit_rect.centerx = self.pos.x
+        collide_with_walls(self, self.game.all_walls, 'x')
+        self.hit_rect.centery = self.pos.y
+        collide_with_walls(self, self.game.all_walls, 'y')
+        self.rect.center = self.hit_rect.center
 
 class Mob(Sprite):
     def __init__(self, game, x, y):
@@ -112,6 +135,7 @@ class Coin(Sprite):
         self.rect = self.image.get_rect()
         self.vel = vec(0,0)
         self.pos = vec(x,y) * TILESIZE
+        self.rect.center = self.pos
     
     def update(self):
         pass
