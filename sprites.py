@@ -16,22 +16,22 @@ def collide_hit_rect(one, two):
 def collide_with_walls(sprite, group, dir):
     hits = pg.sprite.spritecollide(sprite, group, False, collide_hit_rect)
     if hits:
-        hit = hits[0]  # first collision
         if dir == 'x':
-            # if the velocity of the Player is right
-            if sprite.vel.x > 0:
-                sprite.pos.x = hit.rect.left - sprite.hit_rect.width / 2
-            # if the velocity of the Player is left
-            elif sprite.vel.x < 0:
-                sprite.pos.x = hit.rect.right + sprite.hit_rect.width / 2
+            # right is positive velocity
+            if hits[0].rect.centerx > sprite.hit_rect.centerx:
+                sprite.pos.x = hits[0].rect.left - sprite.hit_rect.width / 2
+            # left is negative velocity
+            if hits[0].rect.centerx < sprite.hit_rect.centerx:
+                sprite.pos.x = hits[0].rect.right + sprite.hit_rect.width / 2
             sprite.vel.x = 0
             sprite.hit_rect.centerx = sprite.pos.x
 
         if dir == 'y':
-            if sprite.vel.y > 0:  # moving down
-                sprite.pos.y = hit.rect.top - sprite.hit_rect.height / 2
-            elif sprite.vel.y < 0:  # moving up
-                sprite.pos.y = hit.rect.bottom + sprite.hit_rect.height / 2
+            if hits[0].rect.centery > sprite.hit_rect.centery:  # moving down
+                # center of rec is half of the square higher than collision point
+                sprite.pos.y = hits[0].rect.top - sprite.hit_rect.height / 2
+            if hits[0].rect.centery < sprite.hit_rect.centery:  # moving up
+                sprite.pos.y = hits[0].rect.bottom + sprite.hit_rect.height / 2
             sprite.vel.y = 0
             sprite.hit_rect.centery = sprite.pos.y
 
@@ -112,8 +112,9 @@ class Wall(Sprite):
         self.groups = game.all_sprites, game.all_walls
         Sprite.__init__(self, self.groups)
         self.game = game
-        self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image.fill(GREEN)
+        self.image = game.wall_img
+        #self.image = pg.Surface((TILESIZE, TILESIZE))
+        #self.image.fill(GREEN)
         self.rect = self.image.get_rect()
         self.vel = vec(0,0)
         self.pos = vec(x,y) * TILESIZE

@@ -17,7 +17,9 @@ class Map:
         self.width = self.tilewidth * TILESIZE
         self.height = self.tileheight * TILESIZE
 
-
+class Spritesheet:
+    def __init__(self, filename):
+        self.spritesheet
 
 # this class creates a countdown timer for a cooldown
 class Cooldown:
