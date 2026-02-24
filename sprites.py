@@ -14,26 +14,24 @@ def collide_hit_rect(one, two):
 # checks for vertical/horizontal collision in order
 # sets position based on collision direction
 def collide_with_walls(sprite, group, dir):
-    if dir == 'x':
-        hits = pg.sprite.spritecollide(sprite, group, False, collide_hit_rect)
-        if hits:
-            #print("collided with wall from x dir")
-            # if Player is right of wall, stops it
-            if hits[0].rect.centerx > sprite.hit_rect.centerx:
-                sprite.pos.x = hits[0].rect.left - sprite.hit_rect.width / 2
-            # if Player is left of wall, stops it
-            if hits[0].rect.centerx < sprite.hit_rect.centerx:
-                sprite.pos.x = hits[0].rect.right + sprite.hit_rect.width / 2
-            # stops the Player in the x-direction
+    hits = pg.sprite.spritecollide(sprite, group, False, collide_hit_rect)
+    if hits:
+        hit = hits[0]  # first collision
+        if dir == 'x':
+            # if the velocity of the Player is right
+            if sprite.vel.x > 0:
+                sprite.pos.x = hit.rect.left - sprite.hit_rect.width / 2
+            # if the velocity of the Player is left
+            elif sprite.vel.x < 0:
+                sprite.pos.x = hit.rect.right + sprite.hit_rect.width / 2
             sprite.vel.x = 0
             sprite.hit_rect.centerx = sprite.pos.x
+
         if dir == 'y':
-            #print("collided with wall from y dir")
-            if hits[0].rect.centery > sprite.hit_rect.centery:
-                sprite.pos.y = hits[0].rect.top + sprite.hit_rect.height / 2
-            if hits[0].rect.centery < sprite.hit_rect.centery:
-                sprite.pos.y = hits[0].rect.bottom - sprite.hit_rect.height / 2
-            # stops the Player in the y-direction
+            if sprite.vel.y > 0:  # moving down
+                sprite.pos.y = hit.rect.top - sprite.hit_rect.height / 2
+            elif sprite.vel.y < 0:  # moving up
+                sprite.pos.y = hit.rect.bottom + sprite.hit_rect.height / 2
             sprite.vel.y = 0
             sprite.hit_rect.centery = sprite.pos.y
 
