@@ -1,6 +1,8 @@
 import pygame as pg
 from pygame.sprite import Sprite
 from settings import *
+from utils import *
+from os import path
 
 vec = pg.math.Vector2
 
@@ -19,19 +21,19 @@ def collide_with_walls(sprite, group, dir):
         if dir == 'x':
             # right is positive velocity
             if hits[0].rect.centerx > sprite.hit_rect.centerx:
-                sprite.pos.x = hits[0].rect.left - sprite.hit_rect.width / 2
+                sprite.pos.x = hits[0].rect.left - sprite.hit_rect.width / 1.7
             # left is negative velocity
             if hits[0].rect.centerx < sprite.hit_rect.centerx:
-                sprite.pos.x = hits[0].rect.right + sprite.hit_rect.width / 2
+                sprite.pos.x = hits[0].rect.right + sprite.hit_rect.width / 1.7
             sprite.vel.x = 0
             sprite.hit_rect.centerx = sprite.pos.x
 
         if dir == 'y':
             if hits[0].rect.centery > sprite.hit_rect.centery:  # moving down
                 # center of rec is half of the square higher than collision point
-                sprite.pos.y = hits[0].rect.top - sprite.hit_rect.height / 2
+                sprite.pos.y = hits[0].rect.top - sprite.hit_rect.height / 1.7
             if hits[0].rect.centery < sprite.hit_rect.centery:  # moving up
-                sprite.pos.y = hits[0].rect.bottom + sprite.hit_rect.height / 2
+                sprite.pos.y = hits[0].rect.bottom + sprite.hit_rect.height / 1.7
             sprite.vel.y = 0
             sprite.hit_rect.centery = sprite.pos.y
 
@@ -41,6 +43,9 @@ class Player(Sprite):
         self.groups = game.all_sprites
         Sprite.__init__(self, self.groups)
         self.game = game
+        # imports the spritesheet
+        self.spritesheet = Spritesheet(path.join(self.game.img_dir, "sprite_sheet.png"))
+        self.load_images()
         self.image = pg.Surface((TILESIZE, TILESIZE))
         self.image.fill(WHITE)
         self.rect = self.image.get_rect()
@@ -48,6 +53,12 @@ class Player(Sprite):
         # TILESIZE as a multiplier for the game
         self.pos = vec(x,y) * TILESIZE
         self.hit_rect = PLAYER_HIT_RECT
+        # player is not walking/jumping in the start
+        self.jumping = False
+        self.walking = False
+        # default update and first frame = 0
+        self.last_update = 0
+        self.current_frame = 0
     
     def get_keys(self):
         # a vector to set velocity of player
@@ -67,6 +78,27 @@ class Player(Sprite):
         if self.vel.x != 0 and self.vel.y != 0:
             # sqrt 2 divided by 2 to represent diagonal movement
             self.vel *= 0.7071
+    
+    # loads sprite & images
+    def load_image(self):
+        # two states- green & red
+        self.standing_frames = (self.spritesheet.get_image(0, 0, TILESIZE, TILESIZE), self.spritesheet.get_image(TILESIZE, 0, TILESIZE, TILESIZE))
+        for frame in self.standing_frames:
+            frame.set_colorkey(BLACK)
+    
+    # gets time as it loops
+    def animate(self):
+        now = pg.time.get_ticks()
+        if not self.jumping and not self.walking:
+            if now - self.last.update > 350:
+                self.last_update = now
+                # goes through all frame numbers, alternates based on odd/even (modulus)
+                self.current_frame = (self.current_frame + 1) % len(self.standing_frames)
+                bottom = self.rect.bottom
+                self.image = self.standing_frames[self.current_frame]
+                self.rect = self.image.get_rect()
+                self.rect.bottom = bottom
+
 
     def update(self):
         self.get_keys()
