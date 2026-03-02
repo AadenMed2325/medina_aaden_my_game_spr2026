@@ -55,7 +55,7 @@ class Player(Sprite):
         self.hit_rect = PLAYER_HIT_RECT
         # player is not walking/jumping in the start
         self.jumping = False
-        self.walking = False
+        self.moving = False
         # default update and first frame = 0
         self.last_update = 0
         self.current_frame = 0
@@ -79,29 +79,43 @@ class Player(Sprite):
             # sqrt 2 divided by 2 to represent diagonal movement
             self.vel *= 0.7071
     
+        if keys[pg.K_j]:
+            self.pos.y = self.pos.y - 5
+    
     # loads sprite & images
-    def load_image(self):
+    def load_images(self):
         # two states- green & red
-        self.standing_frames = (self.spritesheet.get_image(0, 0, TILESIZE, TILESIZE), self.spritesheet.get_image(TILESIZE, 0, TILESIZE, TILESIZE))
+        self.standing_frames = [self.spritesheet.get_image(0, 0, TILESIZE, TILESIZE), 
+                                self.spritesheet.get_image(TILESIZE, 0, TILESIZE, TILESIZE)]
+        self.moving_frames = [self.spritesheet.get_image(TILESIZE*2, 0, TILESIZE, TILESIZE),
+                              self.spritesheet.get_image(TILESIZE*3, 0, TILESIZE, TILESIZE)]
         for frame in self.standing_frames:
             frame.set_colorkey(BLACK)
     
     # gets time as it loops
     def animate(self):
         now = pg.time.get_ticks()
-        if not self.jumping and not self.walking:
-            if now - self.last.update > 350:
+        if not self.jumping and not self.moving:
+            if now - self.last_update > 350:
                 self.last_update = now
                 # goes through all frame numbers, alternates based on odd/even (modulus)
                 self.current_frame = (self.current_frame + 1) % len(self.standing_frames)
                 bottom = self.rect.bottom
-                self.image = self.standing_frames[self.current_frame]
+                self.image = self.moving_frames[self.current_frame]
                 self.rect = self.image.get_rect()
                 self.rect.bottom = bottom
-
+        elif self.moving:
+            pass
+    
+    def state_check(self):
+        if self.vel != vec(0, 0):
+            self.moving = True
+        else:
+            self.moving = False
 
     def update(self):
         self.get_keys()
+        self.animate()
         # sets new position
         self.rect.center = self.pos
         self.pos += self.vel * self.game.dt
