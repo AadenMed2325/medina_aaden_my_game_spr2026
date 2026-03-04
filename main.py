@@ -59,6 +59,7 @@ class Game:
         self.all_sprites = pg.sprite.Group()
         self.all_walls = pg.sprite.Group()
         self.all_mobs = pg.sprite.Group()
+        self.all_projectiles = pg.sprite.Group()
         #self.player = Player(self, 15, 15)
         # self = the game in this part of the code
         #self.mob = Mob(self, 4, 4)
@@ -113,7 +114,7 @@ class Game:
     
     # this method uses draw_text to draw text and display it
     def draw(self):
-        self.screen.fill(BLUE)
+        self.screen.fill(ORANGE)
         self.draw_text("Hello World", 24, WHITE, WIDTH/2, TILESIZE)
         self.draw_text(str(self.dt), 24, WHITE, WIDTH/2, HEIGHT/4)
         self.draw_text(str(self.game_cooldown.ready()), 24, WHITE, WIDTH/2, HEIGHT/3)

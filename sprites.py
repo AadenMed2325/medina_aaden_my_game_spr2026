@@ -47,7 +47,9 @@ class Player(Sprite):
         self.spritesheet = Spritesheet(path.join(self.game.img_dir, "sprite_sheet.png"))
         self.load_images()
         self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image.fill(WHITE)
+        self.image = self.spritesheet.get_image(0, 0, TILESIZE, TILESIZE)
+        self.image.set_colorkey(BLACK)
+        #self.image.fill(WHITE)
         self.rect = self.image.get_rect()
         self.vel = vec(0,0)
         # TILESIZE as a multiplier for the game
@@ -66,6 +68,9 @@ class Player(Sprite):
         # gets key input from the user
         # wasd - up, left, down, right
         keys = pg.key.get_pressed()
+        if keys[pg.K_f]:
+            print('I fired a projectile')
+            p = Projectile(self.game, self.rect.x, self.rect.y)
         if keys[pg.K_a]:
             self.vel.x = -PLAYER_SPEED
         if keys[pg.K_d]:
@@ -89,7 +94,10 @@ class Player(Sprite):
                                 self.spritesheet.get_image(TILESIZE, 0, TILESIZE, TILESIZE)]
         self.moving_frames = [self.spritesheet.get_image(TILESIZE*2, 0, TILESIZE, TILESIZE),
                               self.spritesheet.get_image(TILESIZE*3, 0, TILESIZE, TILESIZE)]
+        # edits out the set color, background black
         for frame in self.standing_frames:
+            frame.set_colorkey(BLACK)
+        for frame in self.moving_frames:
             frame.set_colorkey(BLACK)
     
     # gets time as it loops
@@ -101,11 +109,17 @@ class Player(Sprite):
                 # goes through all frame numbers, alternates based on odd/even (modulus)
                 self.current_frame = (self.current_frame + 1) % len(self.standing_frames)
                 bottom = self.rect.bottom
-                self.image = self.moving_frames[self.current_frame]
+                self.image = self.standing_frames[self.current_frame]
                 self.rect = self.image.get_rect()
                 self.rect.bottom = bottom
         elif self.moving:
-            pass
+            if now - self.last_update > 350:
+                self.last_update = now
+                self.current_frame = (self.current_frame + 1) % len(self.moving_frames)
+                bottom = self.rect.bottom
+                self.image = self.moving_frames[self.current_frame]
+                self.rect = self.image.get_rect()
+                self.rect.bottom = bottom
     
     def state_check(self):
         if self.vel != vec(0, 0):
@@ -116,6 +130,7 @@ class Player(Sprite):
     def update(self):
         self.get_keys()
         self.animate()
+        self.state_check()
         # sets new position
         self.rect.center = self.pos
         self.pos += self.vel * self.game.dt
@@ -168,7 +183,24 @@ class Wall(Sprite):
     def update(self):
         pass
             
+class Projectile(Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.all_projectiles
+        Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image.fill(RED)
+        self.rect = self.image.get_rect()
+        self.vel = vec(1,0)
+        self.pos = vec(x,y) * TILESIZE
+        self.speed = 5
+        print('im a real projectile... ')
 
+    def update(self):
+        hits = pg.sprite.spritecollide(self, self.game.all_walls, True)
+        print(hits)
+        self.pos += self.speed * self.vel
+        self.rect.center = self.pos
 
 class Coin(Sprite):
     def __init__(self, game, x, y):
