@@ -114,7 +114,7 @@ class Game:
     
     # this method uses draw_text to draw text and display it
     def draw(self):
-        self.screen.fill(ORANGE)
+        self.screen.fill(IVORY)
         self.draw_text("Hello World", 24, WHITE, WIDTH/2, TILESIZE)
         self.draw_text(str(self.dt), 24, WHITE, WIDTH/2, HEIGHT/4)
         self.draw_text(str(self.game_cooldown.ready()), 24, WHITE, WIDTH/2, HEIGHT/3)
