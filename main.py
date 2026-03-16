@@ -75,8 +75,10 @@ class Game:
                 if tile == 'P':
                     # self in this part of the game
                     self.player = Player(self, col, row)
-                #if tile == 'C':
-                    #Coin(self, col, row)
+                if tile == 'C':
+                    Coin(self, col, row)
+                if tile == 'M':
+                    Mob(self, col, row)
         self.run()
 
     def run(self):
