@@ -60,6 +60,7 @@ class Game:
         self.all_walls = pg.sprite.Group()
         self.all_mobs = pg.sprite.Group()
         self.all_projectiles = pg.sprite.Group()
+        self.all_blocks = pg.sprite.Group()
         #self.player = Player(self, 15, 15)
         # self = the game in this part of the code
         #self.mob = Mob(self, 4, 4)
@@ -79,6 +80,10 @@ class Game:
                     Coin(self, col, row)
                 if tile == 'M':
                     Mob(self, col, row)
+                if tile == 'X':
+                    P1Block(self, col, row)
+                if tile == 'Y':
+                    P2Block(self, col, row)
         self.run()
 
     def run(self):

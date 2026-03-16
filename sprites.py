@@ -233,3 +233,29 @@ class Coin(Sprite):
     
     def update(self):
         pass
+
+#class Block(Sprite):
+class P1Block(Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.all_blocks
+        self.health = 500
+        print(self.health)
+        self.game = game
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image.fill(BLUE)
+        self.rect = self.image.get_rect()
+        self.vel = vec(0,0)
+        self.pos = vec(x,y) * TILESIZE
+        self.rect.center = self.pos
+class P2Block(Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.all_blocks
+        self.health = 500
+        print(self.health)
+        self.game = game
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image.fill(RED)
+        self.rect = self.image.get_rect()
+        self.vel = vec(0,0)
+        self.pos = vec(x,y) * TILESIZE
+        self.rect.center = self.pos
