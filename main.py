@@ -72,18 +72,18 @@ class Game:
                 if tile == '1':
                     # object still exists without a name
                     # call class constructor without assigning variable...when
-                    Wall(self, col, row)
+                    Wall(self, col + 0.5, row + 0.5)
                 if tile == 'P':
                     # self in this part of the game
-                    self.player = Player(self, col, row)
+                    self.player = Player(self, col + 0.5, row + 0.5)
                 if tile == 'C':
-                    Coin(self, col, row)
-                if tile == 'M':
-                    Mob(self, col, row)
+                    Coin(self, col + 0.5, row + 0.5)
+                #if tile == 'M':
+                    #Mob(self, col + 0.5, row + 0.5)
                 if tile == 'X':
-                    P1Block(self, col, row)
+                    P1Block(self, col, row + 0.5)
                 if tile == 'Y':
-                    P2Block(self, col, row)
+                    P2Block(self, col + 1, row + 0.5)
         self.run()
 
     def run(self):

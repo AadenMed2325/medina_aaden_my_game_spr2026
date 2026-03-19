@@ -237,24 +237,30 @@ class Coin(Sprite):
 #class Block(Sprite):
 class P1Block(Sprite):
     def __init__(self, game, x, y):
-        self.groups = game.all_sprites, game.all_blocks
+        self.groups = game.all_sprites, game.all_blocks, game.all_walls
+        Sprite.__init__(self, self.groups)
         self.health = 500
         print(self.health)
         self.game = game
-        self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image.fill(BLUE)
+        self.image = pg.Surface((TILESIZE * TILESIZE/2 + TILESIZE, TILESIZE))
+        self.image.fill(RED)
         self.rect = self.image.get_rect()
         self.vel = vec(0,0)
         self.pos = vec(x,y) * TILESIZE
         self.rect.center = self.pos
+
+    def update(self):
+        self.health = self.health
+
 class P2Block(Sprite):
     def __init__(self, game, x, y):
-        self.groups = game.all_sprites, game.all_blocks
+        self.groups = game.all_sprites, game.all_blocks, game.all_walls
+        Sprite.__init__(self, self.groups)
         self.health = 500
         print(self.health)
         self.game = game
-        self.image = pg.Surface((TILESIZE, TILESIZE))
-        self.image.fill(RED)
+        self.image = pg.Surface((TILESIZE * TILESIZE/2 + TILESIZE, TILESIZE))
+        self.image.fill(BLUE)
         self.rect = self.image.get_rect()
         self.vel = vec(0,0)
         self.pos = vec(x,y) * TILESIZE
