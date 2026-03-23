@@ -31,6 +31,7 @@ class Game:
     def __init__(self):
         # pygame is referred to as pg
         pg.init()
+        pg.mixer.init()
         # setting up pygame screen using tuple value for width height
         # placeholder/variable for any instance of the screen
         self.screen = pg.display.set_mode((WIDTH, HEIGHT))
@@ -47,6 +48,9 @@ class Game:
         # accesses the game directory
         self.game_dir = path.dirname(__file__)
         self.img_dir = path.join(self.game_dir, 'images')
+        # sound directory
+        self.snd_dir = path.join(self.game_dir, 'sounds')
+        #self.pickup_snd = pg.mixer.Sound(path.join(self.snd_dir, "pickup.wav"))
         # add the image
         self.wall_img = pg.image.load(path.join(self.img_dir, 'Block Pixel.png')).convert_alpha()
         # instantiating the object
@@ -61,6 +65,7 @@ class Game:
         self.all_mobs = pg.sprite.Group()
         self.all_projectiles = pg.sprite.Group()
         self.all_blocks = pg.sprite.Group()
+        self.all_players = pg.sprite.Group()
         #self.player = Player(self, 15, 15)
         # self = the game in this part of the code
         #self.mob = Mob(self, 4, 4)
@@ -76,6 +81,8 @@ class Game:
                 if tile == 'P':
                     # self in this part of the game
                     self.player = Player(self, col + 0.5, row + 0.5)
+                if tile == 'Q':
+                    self.contender = Contender(self, col + 0.5, row + 0.5)
                 if tile == 'C':
                     Coin(self, col + 0.5, row + 0.5)
                 #if tile == 'M':
@@ -108,7 +115,7 @@ class Game:
             if event.type == pg.MOUSEBUTTONUP:
                 print("I can get mouse input")
             if event.type == pg.KEYUP:
-                if event.key == pg.K_k:
+                if event.key == pg.K_q:
                     print("I can determine when keys are released")
 
 

@@ -43,7 +43,7 @@ def collide_with_walls(sprite, group, dir):
 # player class to instantiate Player class
 class Player(Sprite):
     def __init__(self, game, x, y):
-        self.groups = game.all_sprites
+        self.groups = game.all_sprites, game.all_players
         Sprite.__init__(self, self.groups)
         self.game = game
         # imports the spritesheet
@@ -91,8 +91,6 @@ class Player(Sprite):
             # sqrt 2 divided by 2 to represent diagonal movement
             self.vel *= 0.7071
     
-        if keys[pg.K_j]:
-            self.pos.y = self.pos.y - 5
         
         # press f to fire a projectile
         if keys[pg.K_f]:
@@ -155,6 +153,57 @@ class Player(Sprite):
         self.hit_rect.centery = self.pos.y
         collide_with_walls(self, self.game.all_walls, 'y')
         self.rect.center = self.hit_rect.center
+
+class Contender(Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.all_players
+        Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image.fill(ORANGE)
+        #self.image.fill(WHITE)
+        self.rect = self.image.get_rect()
+        self.vel = vec(0,0)
+        # TILESIZE as a multiplier for the game
+        self.pos = vec(x,y) * TILESIZE
+        self.hit_rect = CONTENDER_HIT_RECT
+        # player is not walking/jumping in the start
+        self.jumping = False
+        self.moving = False
+        # default update and first frame = 0
+        self.last_update = 0
+        self.current_frame = 0
+    
+    def get_keys(self):
+        # a vector to set velocity of player
+        self.vel = vec(0,0)
+        # gets key input from the user
+        # wasd - up, left, down, right
+        keys = pg.key.get_pressed()
+        if keys[pg.K_j]:
+            self.vel.x = -CONTENDER_SPEED
+        if keys[pg.K_l]:
+            self.vel.x = CONTENDER_SPEED
+        if keys[pg.K_i]:
+            self.vel.y = -CONTENDER_SPEED
+        if keys[pg.K_k]:
+            self.vel.y = CONTENDER_SPEED
+        # if player is moving diagonally (both x and y movement does not equal zero)
+        if self.vel.x != 0 and self.vel.y != 0:
+            # sqrt 2 divided by 2 to represent diagonal movement
+            self.vel *= 0.7071
+        
+    def update(self):
+        self.get_keys()
+        # sets new position
+        self.rect.center = self.pos
+        self.pos += self.vel * self.game.dt
+        self.hit_rect.centerx = self.pos.x
+        collide_with_walls(self, self.game.all_walls, 'x')
+        self.hit_rect.centery = self.pos.y
+        collide_with_walls(self, self.game.all_walls, 'y')
+        self.rect.center = self.hit_rect.center
+
 
 class Mob(Sprite):
     def __init__(self, game, x, y):
