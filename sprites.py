@@ -288,18 +288,21 @@ class P1Block(Sprite):
     def __init__(self, game, x, y):
         self.groups = game.all_sprites, game.all_blocks, game.all_walls
         Sprite.__init__(self, self.groups)
-        self.health = 500
-        print(self.health)
         self.game = game
+        #set width to be half of the width 
         self.image = pg.Surface((TILESIZE * TILESIZE/2 + TILESIZE, TILESIZE))
         self.image.fill(RED)
         self.rect = self.image.get_rect()
         self.vel = vec(0,0)
         self.pos = vec(x,y) * TILESIZE
         self.rect.center = self.pos
+    
+    # way to get health
+    def get_health(self):
+        self.health = 500
 
     def update(self):
-        self.health = self.health
+        pass
 
 class P2Block(Sprite):
     def __init__(self, game, x, y):

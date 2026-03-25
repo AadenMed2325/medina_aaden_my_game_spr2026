@@ -100,7 +100,8 @@ class Game:
             self.dt = self.clock.tick(FPS) / 1000
 
             self.events()
-            self.update()
+            if not self.paused:
+                self.update()
             self.draw()
 
     def events(self):
@@ -134,6 +135,8 @@ class Game:
         self.draw_text(str(self.game_cooldown.ready()), 24, WHITE, WIDTH/2, HEIGHT/3)
         self.draw_text(str(self.player.pos), 24, WHITE, WIDTH/2, HEIGHT - TILESIZE * 3)
         self.all_sprites.draw(self.screen)
+        self.draw_text(str(P1Block.get_health), 24, GREEN, WIDTH/4, HEIGHT - TILESIZE)
+        self.draw_text(str(CONTENDER_HEALTH), 24, GREEN, WIDTH/1.33, HEIGHT - TILESIZE)
         pg.display.flip()
 
     # this method draws text in the game
@@ -144,6 +147,35 @@ class Game:
         text_rect = text_surface.get_rect()
         text_rect.midtop = (x,y)
         self.screen.blit(text_surface, text_rect)
+    
+    # loading screen when player opens game
+    def show_start_screen(self):
+        self.screen.fill(BLACK)
+        self.draw_text("welcome", 48, WHITE, WIDTH/2, HEIGHT/2)
+        pg.display.flip()
+        self.wait_for_key()
+
+    # game stops when 
+    def show_pause_screen(self):
+        pass
+    
+    def wait_for_key(self):
+        waiting = True
+        # while the game is waiting for player to respond
+        while waiting:
+            self.clock.tick(FPS)
+            for event in pg.event.get():
+                if event.type == pg.QUIT:
+                    # game won't run
+                    waiting = False
+                    self.running = False
+                if event.type == pg.KEYUP:
+                    # will pause or resume the game when p is pressed
+                    if event.key == pg.K_p:
+                        if self.paused:
+                            self.paused = False
+                        else:
+                            self.paused = True
 
 
 # instantiating the game
