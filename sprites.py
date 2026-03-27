@@ -140,6 +140,18 @@ class Player(Sprite):
             self.state_machine.transition('idle')
             self.moving = False
 
+    # how to collide with anything based on player
+    def collide_with_stuff(self, group, kill):
+        hits = pg.sprite.spritecollide(self, group, kill)
+        if hits:
+            # get first hit, give me the string value of the name of its clas
+            if str(hits[0].__class__.__name__) == "Mob":
+                print("I collided with a mob")
+            if str(hits[0].__class__.__name__) == "Contender":
+                print("I collided with my opponent")
+            if str(hits[0].__class__.__name__) == "Coin":
+                print("I collided with a coin")
+
     def update(self):
         self.get_keys()
         self.state_machine.update()
@@ -148,6 +160,9 @@ class Player(Sprite):
         # sets new position
         self.rect.center = self.pos
         self.pos += self.vel * self.game.dt
+        #self.collide_with_stuff(self.game.all_mobs, True)
+        self.collide_with_stuff(self.game.all_players, True)
+        #self.collide_with_stuff(self.game.all_blocks, True)
         self.hit_rect.centerx = self.pos.x
         collide_with_walls(self, self.game.all_walls, 'x')
         self.hit_rect.centery = self.pos.y
@@ -296,13 +311,15 @@ class P1Block(Sprite):
         self.vel = vec(0,0)
         self.pos = vec(x,y) * TILESIZE
         self.rect.center = self.pos
+        self.health = 100
     
-    # way to get health
-    def get_health(self):
-        self.health = 500
+    # way to get health of block
+    #def get_health(self):
+        #self.health = 500
 
     def update(self):
         pass
+        #self.health = self.get_health()
 
 class P2Block(Sprite):
     def __init__(self, game, x, y):

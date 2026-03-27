@@ -51,3 +51,15 @@ class Cooldown:
         if current_time - self.start_time >= self.time:
             return True
         return False
+
+# displays health bar on the screen
+def draw_health_bar(surf, x, y, pct):
+    if pct < 0:
+        pct = 0
+    HEALTH_LENGTH = WIDTH / 2
+    HEALTH_HEIGHT = TILESIZE
+    fill = (pct/100) * HEALTH_LENGTH
+    outline_rect = pg.Rect(x, y, HEALTH_LENGTH, HEALTH_HEIGHT)
+    fill_rect = (x, y, fill, HEALTH_HEIGHT)
+    pg.draw.rect(surf, RED, fill_rect)
+    pg.draw.rect(surf, WHITE, outline_rect, 2)

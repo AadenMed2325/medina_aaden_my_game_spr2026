@@ -40,6 +40,7 @@ class Game:
         self.clock = pg.time.Clock()
         self.running = True
         self.playing = True
+        self.paused = False
         self.game_cooldown = Cooldown(5000)
     
     # a method is a function tied to a Class
@@ -135,8 +136,9 @@ class Game:
         self.draw_text(str(self.game_cooldown.ready()), 24, WHITE, WIDTH/2, HEIGHT/3)
         self.draw_text(str(self.player.pos), 24, WHITE, WIDTH/2, HEIGHT - TILESIZE * 3)
         self.all_sprites.draw(self.screen)
-        self.draw_text(str(P1Block.get_health), 24, GREEN, WIDTH/4, HEIGHT - TILESIZE)
+        #self.draw_text(str(P1Block.health), 24, GREEN, WIDTH/4, HEIGHT - TILESIZE)
         self.draw_text(str(CONTENDER_HEALTH), 24, GREEN, WIDTH/1.33, HEIGHT - TILESIZE)
+        draw_health_bar(self.screen, 10, 10, 100)
         pg.display.flip()
 
     # this method draws text in the game
