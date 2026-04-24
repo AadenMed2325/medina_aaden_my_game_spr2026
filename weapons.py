@@ -14,7 +14,7 @@ def draw_circle(sprite, color):
     pg.draw.circle(sprite.image, color, (TILESIZE // 2, TILESIZE // 2,), TILESIZE// 2)
 
 
-# function: 1/5 chance of spawning the weapon
+# function: 1/100 chance of spawning the weapon every second
 def weapon_spawn(sprite):
     total_ticks = pg.time.get_ticks()
     # this checks the function once every second
@@ -22,7 +22,7 @@ def weapon_spawn(sprite):
     if total_ticks - sprite.seconds > 1000:
         sprite.seconds = total_ticks
         if not sprite.has_weapon:
-            weapon_attempt = random.randint(1, 100)
+            weapon_attempt = random.randint(1, 50)
             if weapon_attempt == 1:
                 print('lottery successful')
                 #cool_down = pg.time.get_ticks()
@@ -97,26 +97,14 @@ def choose_weapon(weapon):
    
     # keeps this info stored for the color
     weapon.weapon_color = weapon.image.copy()
-       
-def collide_and_collect(sprite, group, dir):
+
+def collide_and_collect(sprite, group):
+    # True for 3rd argument kills the coin permanently
     hits = pg.sprite.spritecollide(sprite, group, False, collide_hit_rect)
-    if hits:
-        if dir == 'x':
-            if hits[0].rect.centerx > sprite.hit_rect.centerx:
-                sprite.pos.x = hits[0].rect.left - sprite.hit_rect.width / 1.7
-            if hits[0].rect.centerx < sprite.hit_rect.centerx:
-                sprite.pos.x = hits[0].rect.right + sprite.hit_rect.width / 1.7
-            sprite.vel.x = 0
-            sprite.hit_rect.centerx = sprite.pos.x
-
-
-        if dir == 'y':
-            if hits[0].rect.centery > sprite.hit_rect.centery:  
-                sprite.pos.y = hits[0].rect.top - sprite.hit_rect.height / 1.7
-            if hits[0].rect.centery < sprite.hit_rect.centery:
-                sprite.pos.y = hits[0].rect.bottom + sprite.hit_rect.height / 1.7
-            sprite.vel.y = 0
-            sprite.hit_rect.centery = sprite.pos.y
+    for coin in hits:
+        if coin.active and coin.has_weapon:
+            coin.collect()
+            print("coin collected")
 
 
 

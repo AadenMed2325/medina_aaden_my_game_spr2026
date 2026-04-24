@@ -26,7 +26,13 @@ def draw_text(self, text, size, color, x, y):
         text_rect = text_surface.get_rect()
         text_rect.midtop = (x,y)
         self.screen.blit(text_surface, text_rect)
-   
+
+def get_health(self, group):
+        hits = pg.sprite.spritecollide(self, group, False, collide_hit_rect)
+        if hits:
+            print('damage done')
+            self.health = self.health - len(hits)
+
 #Chat GPT helped me with this, I prompted it to help me turn rects into circles
 def draw_circle(sprite, color):
     sprite.image.fill((0, 0, 0, 0))
@@ -270,6 +276,7 @@ class Player(Sprite):
         #self.collide_with_stuff(self.game.all_players, True)
         #self.collide_with_stuff(self.game.all_blocks, True)
         self.hit_rect.centerx = self.pos.x
+        collide_and_collect(self, self.game.all_coins)
         collide_with_stuff(self, self.game.all_walls, 'x')
         collide_with_stuff(self, self.game.all_blocks, 'x')
         collide_and_freeze(self, self.game.all_contenders, 'x')
@@ -344,6 +351,7 @@ class Contender(Sprite):
         self.hit_rect.centery = self.pos.y
         collide_with_stuff(self, self.game.all_walls, 'y')
         collide_with_stuff(self, self.game.all_blocks, 'y')
+        collide_and_collect(self, self.game.all_coins)
         #collide_with_stuff(self, self.game.all_coins, 'y')
         collide_and_freeze(self, self.game.all_players, 'y')
         self.rect.center = self.hit_rect.center
@@ -434,11 +442,15 @@ class Coin(Sprite):
         #self.image.fill(YELLOW)
         #self.weapon_attempt = 0
         self.has_weapon = False
+        self.active = True
+        self.respawn_time = 10000
         # amount of time the weapon will stay
         self.weapon_duration = 0
         # for the cooldown timer to check every second
         self.seconds = 0
         self.cool_down = 0
+        self.collect_time = 0
+        #self.collection_cooldown = 0
         # ChatGPT helped me with SRCALPHA, I asked it how to turn the sprites from a square
         # to a circle
         self.image = pg.Surface((TILESIZE, TILESIZE), pg.SRCALPHA)
@@ -453,15 +465,26 @@ class Coin(Sprite):
         #spawn_timing(self)
         #if self.has_weapon:
             #choose_weapon(self)    
-   
+    # GPT helped me with this, I wanted to know how to allow the Coin/Weapon to respawn
+    # after the Player collected it
+    def collect(self):
+        self.active = False
+        self.collect_time = pg.time.get_ticks() 
+        # this makes the image transparent from 0-255  
+        self.image.set_alpha(0)
+
     def update(self):
-        weapon_spawn(self)
-        collide_with_stuff(self, self.game.all_players, 'x')
-        collide_with_stuff(self, self.game.all_players, 'y')
-        collide_with_stuff(self, self.game.all_contenders, 'x')
-        collide_with_stuff(self, self.game.all_contenders, 'y')
-        collide_with_stuff(self, self.game.all_blocks, 'x')
-        collide_with_stuff(self, self.game.all_blocks, 'y')
+        now = pg.time.get_ticks()
+        if not self.active:
+            if now - self.collect_time > self.respawn_time:
+                self.active = True
+                # make the image not transparent
+                self.image.set_alpha(255)
+
+        if self.active:
+            weapon_spawn(self)
+            collide_with_stuff(self, self.game.all_blocks, 'x')
+            collide_with_stuff(self, self.game.all_blocks, 'y')
 
 
 #class Block(Sprite):
@@ -481,7 +504,7 @@ class P1Block(Sprite):
         self.vel = vec(0,0)
         self.pos = vec(x,y) * TILESIZE
         self.rect.center = self.pos
-
+        self.hit_rect = BLOCK_HIT_RECT
 
 
 
@@ -492,7 +515,8 @@ class P1Block(Sprite):
 
 
     def update(self):
-        pass
+        get_health(self, self.game.all_players)
+        get_health(self, self.game.all_contenders)
         # block_lose_health(self, self.game.all_players)
         # block_lose_health(self, self.game.all_contenders)
         # self.hit_rect.centerx = self.pos.x
