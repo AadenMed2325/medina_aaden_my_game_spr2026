@@ -123,15 +123,23 @@ def collide_with_stuff(sprite, group, dir):
             sprite.hit_rect.centery = sprite.pos.y
         
         if group == sprite.game.all_blocks:
-            print('collided with the block')
+            pass
+            #print('collided with the block')
+            #block_lose_count(group, sprite)
             #block_lose_health(sprite, group)
             #print(group.health)
+
+def block_lose_count(block, player):
+    hits = pg.sprite.spritecollide(block, player, False, collide_hit_rect)
+    #hit_count = pg.time.get_ticks()
+    if hits:
+        block.health -= 1
+        print(block.health)
 
 def block_lose_health(sprite, group, dir):
     hits = pg.sprite.spritecollide(sprite, group, False, collide_hit_rect)
     if hits:
-        sprite.health -= 1
-        #print(sprite.health)
+        block_lose_count(sprite, group)
         if dir == 'x':
             if hits[0].rect.centerx > sprite.hit_rect.centerx:
                 sprite.pos.x = hits[0].rect.left - sprite.hit_rect.width / 1.7
@@ -148,7 +156,9 @@ def block_lose_health(sprite, group, dir):
                 sprite.pos.y = hits[0].rect.bottom + sprite.hit_rect.height / 1.7
             sprite.vel.y = 0
             sprite.hit_rect.centery = sprite.pos.y
-
+        
+        if group == sprite.game.all_players or group == sprite.game.all_contenders:
+            print('block collision')
 
 # def block_lose_health(sprite, group):
 #     hits = pg.sprite.spritecollide(sprite, group, False, collide_hit_rect)
@@ -205,11 +215,12 @@ class Player(Sprite):
         self.vel = vec(0,0)
         # TILESIZE as a multiplier for the game
         self.pos = vec(x,y) * TILESIZE
-        self.hit_rect = PLAYER_HIT_RECT
+        self.hit_rect = PLAYER_HIT_RECT.copy()
         # player is not walking/jumping in the start
         self.jumping = False
         self.moving = False
         self.frozen = False
+        self.weapon_equipped = False
         self.freeze_time = 0
         self.freeze_duration = 3000
         # default update and first frame = 0
@@ -356,11 +367,12 @@ class Contender(Sprite):
         self.vel = vec(0,0)
         # TILESIZE as a multiplier for the game
         self.pos = vec(x,y) * TILESIZE
-        self.hit_rect = CONTENDER_HIT_RECT
+        self.hit_rect = CONTENDER_HIT_RECT.copy()
         # player is not walking/jumping in the start
         self.jumping = False
         self.moving = False
         self.frozen = False
+        self.weapon_equipped = False
         self.freeze_time = 0
         self.freeze_duration = 3000
         # default update and first frame = 0
@@ -508,7 +520,7 @@ class Coin(Sprite):
         draw_circle(self, GRAY)
         # if not self.has_weapon:
         #     self.image.fill(GRAY)
-        self.hit_rect = WEAPON_HIT_RECT
+        self.hit_rect = WEAPON_HIT_RECT.copy()
         self.rect = self.image.get_rect()
         self.vel = vec(0,0)
         self.pos = vec(x,y) * TILESIZE
@@ -554,7 +566,7 @@ class P1Block(Sprite):
         self.vel = vec(0,0)
         self.pos = vec(x,y) * TILESIZE
         self.rect.center = self.pos
-        self.hit_rect = BLOCK_HIT_RECT
+        self.hit_rect = BLOCK_HIT_RECT.copy()
 
 
 
@@ -600,14 +612,17 @@ class P2Block(Sprite):
         self.vel = vec(0,0)
         self.pos = vec(x,y) * TILESIZE
         self.rect.center = self.pos
-        self.hit_rect = BLOCK_HIT_RECT
+        self.hit_rect = BLOCK_HIT_RECT.copy()
    
     def update(self):
+        self.rect.center = self.hit_rect.center
+        self.hit_rect.centerx = self.pos.x
+        self.hit_rect.centery = self.pos.y
         block_lose_health(self, self.game.all_players, 'x')
         block_lose_health(self, self.game.all_players, 'y')
         block_lose_health(self, self.game.all_contenders, 'x')
         block_lose_health(self, self.game.all_contenders, 'y')
-        print(self.health)
+        #print(self.health)
         if self.health <= 0:
             print('block destroyed')
             self.kill()
