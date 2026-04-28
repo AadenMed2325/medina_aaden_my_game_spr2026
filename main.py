@@ -78,6 +78,8 @@ class Game:
         self.all_mobs = pg.sprite.Group()
         self.all_projectiles = pg.sprite.Group()
         self.all_blocks = pg.sprite.Group()
+        self.player_block = pg.sprite.Group()
+        self.contender_block = pg.sprite.Group()
         #self.player = Player(self, 15, 15)
         # self = the game in this part of the code
         #self.mob = Mob(self, 4, 4)

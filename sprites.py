@@ -18,6 +18,9 @@ vec = pg.math.Vector2
 def collide_hit_rect(one, two):
     return one.hit_rect.colliderect(two.rect)
 
+# def collide_hit_blocks(one, two):
+#     return one.hit_rect.colliderect(two.hit_rect)
+
 
 def draw_text(self, text, size, color, x, y):
         font_name = pg.font.match_font('arial')
@@ -27,11 +30,30 @@ def draw_text(self, text, size, color, x, y):
         text_rect.midtop = (x,y)
         self.screen.blit(text_surface, text_rect)
 
-def get_health(self, group):
-        hits = pg.sprite.spritecollide(self, group, False, collide_hit_rect)
-        if hits:
-            print('damage done')
-            self.health = self.health - len(hits)
+def get_health(sprite, group, dir):
+    hits = pg.sprite.spritecollide(sprite, group, False, collide_hit_rect)
+    if hits:
+        if dir == 'x':
+            if hits[0].rect.centerx > sprite.hit_rect.centerx:
+                sprite.pos.x = hits[0].rect.left - sprite.hit_rect.width / 1.7
+            if hits[0].rect.centerx < sprite.hit_rect.centerx:
+                sprite.pos.x = hits[0].rect.right + sprite.hit_rect.width / 1.7
+            sprite.vel.x = 0
+            sprite.hit_rect.centerx = sprite.pos.x
+
+
+        if dir == 'y':
+            if hits[0].rect.centery > sprite.hit_rect.centery:  
+                sprite.pos.y = hits[0].rect.top - sprite.hit_rect.height / 1.7
+            if hits[0].rect.centery < sprite.hit_rect.centery:
+                sprite.pos.y = hits[0].rect.bottom + sprite.hit_rect.height / 1.7
+            sprite.vel.y = 0
+            sprite.hit_rect.centery = sprite.pos.y
+        
+        if group == sprite.game.all_blocks:
+            print('collided with the block')
+            #get_health(sprite, group)
+            #print(group.health)
 
 #Chat GPT helped me with this, I prompted it to help me turn rects into circles
 def draw_circle(sprite, color):
@@ -99,11 +121,40 @@ def collide_with_stuff(sprite, group, dir):
                 sprite.pos.y = hits[0].rect.bottom + sprite.hit_rect.height / 1.7
             sprite.vel.y = 0
             sprite.hit_rect.centery = sprite.pos.y
+        
+        if group == sprite.game.all_blocks:
+            print('collided with the block')
+            #block_lose_health(sprite, group)
+            #print(group.health)
+
+def block_lose_health(sprite, group, dir):
+    hits = pg.sprite.spritecollide(sprite, group, False, collide_hit_rect)
+    if hits:
+        sprite.health -= 1
+        #print(sprite.health)
+        if dir == 'x':
+            if hits[0].rect.centerx > sprite.hit_rect.centerx:
+                sprite.pos.x = hits[0].rect.left - sprite.hit_rect.width / 1.7
+            if hits[0].rect.centerx < sprite.hit_rect.centerx:
+                sprite.pos.x = hits[0].rect.right + sprite.hit_rect.width / 1.7
+            sprite.vel.x = 0
+            sprite.hit_rect.centerx = sprite.pos.x
 
 
-def block_lose_health(sprite, group):
-        hits = pg.sprite.spritecollide(sprite, group, False, collide_hit_rect)
-        sprite.health = sprite.health - hits
+        if dir == 'y':
+            if hits[0].rect.centery > sprite.hit_rect.centery:  
+                sprite.pos.y = hits[0].rect.top - sprite.hit_rect.height / 1.7
+            if hits[0].rect.centery < sprite.hit_rect.centery:
+                sprite.pos.y = hits[0].rect.bottom + sprite.hit_rect.height / 1.7
+            sprite.vel.y = 0
+            sprite.hit_rect.centery = sprite.pos.y
+
+
+# def block_lose_health(sprite, group):
+#     hits = pg.sprite.spritecollide(sprite, group, False, collide_hit_rect)
+#     if hits:
+#         sprite.health -= 1
+        # print(sprite.health)
 # def hit_state(sprite, group):
 #     print('hit state running')
 #     hits = pg.sprite.spritecollide(sprite, group, False, collide_hit_rect)
@@ -490,13 +541,12 @@ class Coin(Sprite):
 #class Block(Sprite):
 class P1Block(Sprite):
     def __init__(self, game, x, y):
-        self.groups = game.all_sprites, game.all_blocks
+        self.groups = game.all_sprites, game.all_blocks, game.player_block
         Sprite.__init__(self, self.groups)
         self.health = 500
         self.screen = pg.display.set_mode((WIDTH, HEIGHT))
         self.game = game
         draw_text(self, str(self.health), 24, BLACK, (TILESIZE * TILESIZE) / 4, TILESIZE * TILESIZE - TILESIZE)
-        print(self.health)
         #self.image = (draw_health_bar(game.screen, 8, 8, 88, RED))
         self.image = pg.Surface((TILESIZE/2 + TILESIZE, TILESIZE))
         self.image.fill(RED)
@@ -515,8 +565,20 @@ class P1Block(Sprite):
 
 
     def update(self):
-        get_health(self, self.game.all_players)
-        get_health(self, self.game.all_contenders)
+        self.rect.center = self.hit_rect.center
+        self.hit_rect.centerx = self.pos.x
+        self.hit_rect.centery = self.pos.y
+        block_lose_health(self, self.game.all_players, 'x')
+        block_lose_health(self, self.game.all_players, 'y')
+        block_lose_health(self, self.game.all_contenders, 'x')
+        block_lose_health(self, self.game.all_contenders, 'y')
+        if self.health <= 0:
+            print('block destroyed')
+            self.kill()
+        # get_health(self, self.game.all_players)
+        # get_health(self, self.game.all_players)
+        # get_health(self, self.game.all_contenders, 'x')
+        # get_health(self, self.game.all_contenders, 'y')
         # block_lose_health(self, self.game.all_players)
         # block_lose_health(self, self.game.all_contenders)
         # self.hit_rect.centerx = self.pos.x
@@ -527,7 +589,7 @@ class P1Block(Sprite):
 
 class P2Block(Sprite):
     def __init__(self, game, x, y):
-        self.groups = game.all_sprites, game.all_blocks
+        self.groups = game.all_sprites, game.all_blocks, game.contender_block
         Sprite.__init__(self, self.groups)
         self.health = 500
         print(self.health)
@@ -538,9 +600,17 @@ class P2Block(Sprite):
         self.vel = vec(0,0)
         self.pos = vec(x,y) * TILESIZE
         self.rect.center = self.pos
+        self.hit_rect = BLOCK_HIT_RECT
    
     def update(self):
-        pass
+        block_lose_health(self, self.game.all_players, 'x')
+        block_lose_health(self, self.game.all_players, 'y')
+        block_lose_health(self, self.game.all_contenders, 'x')
+        block_lose_health(self, self.game.all_contenders, 'y')
+        print(self.health)
+        if self.health <= 0:
+            print('block destroyed')
+            self.kill()
 
 
 
