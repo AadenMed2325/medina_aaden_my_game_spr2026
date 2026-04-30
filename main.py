@@ -156,7 +156,7 @@ class Game:
         #self.draw_text(str(self.player.pos), 24, WHITE, WIDTH/2, HEIGHT - TILESIZE * 3)
         self.all_sprites.draw(self.screen)
         #self.draw_text(str(P1Block.health), 24, GREEN, WIDTH/4, HEIGHT - TILESIZE)
-        self.draw_text(str(CONTENDER_HEALTH), 24, GREEN, WIDTH/1.33, HEIGHT - TILESIZE)
+        self.draw_text(str(500), 24, GREEN, WIDTH/1.33, HEIGHT - TILESIZE)
         draw_health_bar(self.screen, 0, HEIGHT - TILESIZE, 88, RED)
         draw_health_bar(self.screen, WIDTH / 2 + TILESIZE/2, HEIGHT - TILESIZE, 88, BLUE)
         pg.display.flip()

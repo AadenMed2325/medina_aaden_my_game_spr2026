@@ -107,15 +107,22 @@ def immobilized_state(sprite, group):
         group.frozen = True
         group.freeze_time = pg.time.get_ticks()
 
+# collision function for blocks to lose health
 def collide_with_blocks(sprite, group, kill):
     hits = pg.sprite.spritecollide(sprite, group, kill)
     if hits:
+        # checks which class is getting hit by the block
         if str(hits[0].__class__.__name__) == "P1Block":
             print("I collided with the red block")
-            hits[0].health -= 1
+            if sprite.weapon_equipped == True:
+            # hits[0] refers to the group
+                hits[0].health -= 1
             print(hits[0].health)
         if str(hits[0].__class__.__name__) == "P2Block":
             print("I collided with the blue block")
+            if sprite.weapon_equipped == True:
+            # hits[0] refers to the group
+                hits[0].health -= 1
             hits[0].health -= 1
             print(hits[0].health)
 
@@ -156,38 +163,6 @@ def collision_check(one, two):
         if str(hits[0].__class__.__name__) == "P1Block":
             print("i collided with the red block")
         print('one-two collision successful')
-
-def block_lose_count(block, player):
-    hits = pg.sprite.spritecollide(block, player, False, collide_hit_rect)
-    #hit_count = pg.time.get_ticks()
-    if hits:
-        block.health -= 1
-        print(block.health)
-
-def block_lose_health(sprite, group, dir):
-    hits = pg.sprite.spritecollide(sprite, group, False, collide_hit_rect)
-    if hits:
-        #block_lose_count(group, sprite)
-        if dir == 'x':
-            if hits[0].rect.centerx > sprite.hit_rect.centerx:
-                sprite.pos.x = hits[0].rect.left - sprite.hit_rect.width / 1.7
-            if hits[0].rect.centerx < sprite.hit_rect.centerx:
-                sprite.pos.x = hits[0].rect.right + sprite.hit_rect.width / 1.7
-            sprite.vel.x = 0
-            sprite.hit_rect.centerx = sprite.pos.x
-
-
-        if dir == 'y':
-            if hits[0].rect.centery > sprite.hit_rect.centery:  
-                sprite.pos.y = hits[0].rect.top - sprite.hit_rect.height / 1.7
-            if hits[0].rect.centery < sprite.hit_rect.centery:
-                sprite.pos.y = hits[0].rect.bottom + sprite.hit_rect.height / 1.7
-            sprite.vel.y = 0
-            sprite.hit_rect.centery = sprite.pos.y
-        
-        if group == sprite.game.all_players or group == sprite.game.all_contenders:
-            print('block collision')
-
 
 
 def freeze_timing(sprite):
@@ -432,6 +407,7 @@ class Contender(Sprite):
         collide_and_collect(self, self.game.all_coins)
         #collide_with_stuff(self, self.game.all_coins, 'y')
         collide_and_freeze(self, self.game.all_players, 'y')
+        collide_with_blocks(self, self.game.all_blocks, False)
         self.rect.center = self.hit_rect.center
         immobilized_state(self, self.game.all_walls)
         # hit_state(self, self.game.all_walls)
@@ -601,10 +577,10 @@ class P1Block(Sprite):
         self.rect.center = self.hit_rect.center
         self.hit_rect.centerx = self.pos.x
         self.hit_rect.centery = self.pos.y
-        block_lose_health(self, self.game.all_players, 'x')
-        block_lose_health(self, self.game.all_players, 'y')
-        block_lose_health(self, self.game.all_contenders, 'x')
-        block_lose_health(self, self.game.all_contenders, 'y')
+        # block_lose_health(self, self.game.all_players, 'x')
+        # block_lose_health(self, self.game.all_players, 'y')
+        # block_lose_health(self, self.game.all_contenders, 'x')
+        # block_lose_health(self, self.game.all_contenders, 'y')
         collision_check(self, self.game.all_players)
         collision_check(self, self.game.all_contenders)
         if self.health <= 0:
@@ -641,10 +617,10 @@ class P2Block(Sprite):
         self.rect.center = self.hit_rect.center
         self.hit_rect.centerx = self.pos.x
         self.hit_rect.centery = self.pos.y
-        block_lose_health(self, self.game.all_players, 'x')
-        block_lose_health(self, self.game.all_players, 'y')
-        block_lose_health(self, self.game.all_contenders, 'x')
-        block_lose_health(self, self.game.all_contenders, 'y')
+        # block_lose_health(self, self.game.all_players, 'x')
+        # block_lose_health(self, self.game.all_players, 'y')
+        # block_lose_health(self, self.game.all_contenders, 'x')
+        # block_lose_health(self, self.game.all_contenders, 'y')
         collision_check(self, self.game.all_players)
         collision_check(self, self.game.all_contenders)
         #print(self.health)

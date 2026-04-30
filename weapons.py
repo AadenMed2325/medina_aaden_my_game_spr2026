@@ -104,7 +104,12 @@ def collide_and_collect(sprite, group):
     for coin in hits:
         if coin.active and coin.has_weapon:
             coin.collect()
-            print("coin collected")
+            if coin.type == "Sword":
+                print("sword collected")
+            elif coin.type == "Hammer":
+                print("hammer collected")
+            else:
+                print("spear collected")
             sprite.weapon_equipped = True
 
 def weapon_collection(sprite, group, weapon):
