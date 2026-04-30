@@ -107,6 +107,17 @@ def immobilized_state(sprite, group):
         group.frozen = True
         group.freeze_time = pg.time.get_ticks()
 
+def collide_with_blocks(sprite, group, kill):
+    hits = pg.sprite.spritecollide(sprite, group, kill)
+    if hits:
+        if str(hits[0].__class__.__name__) == "P1Block":
+            print("I collided with the red block")
+            hits[0].health -= 1
+            print(hits[0].health)
+        if str(hits[0].__class__.__name__) == "P2Block":
+            print("I collided with the blue block")
+            hits[0].health -= 1
+            print(hits[0].health)
 
 def collide_with_stuff(sprite, group, dir):
     hits = pg.sprite.spritecollide(sprite, group, False, collide_hit_rect)
@@ -156,7 +167,7 @@ def block_lose_count(block, player):
 def block_lose_health(sprite, group, dir):
     hits = pg.sprite.spritecollide(sprite, group, False, collide_hit_rect)
     if hits:
-        block_lose_count(group, sprite)
+        #block_lose_count(group, sprite)
         if dir == 'x':
             if hits[0].rect.centerx > sprite.hit_rect.centerx:
                 sprite.pos.x = hits[0].rect.left - sprite.hit_rect.width / 1.7
@@ -349,6 +360,7 @@ class Player(Sprite):
         collide_with_stuff(self, self.game.all_walls, 'y')
         collide_with_stuff(self, self.game.all_blocks, 'y')
         collide_and_freeze(self, self.game.all_contenders, 'y')
+        collide_with_blocks(self, self.game.all_blocks, False)
         self.rect.center = self.hit_rect.center
         #immobilized_state(self, self.game.all_blocks)
         # hit_state(self, self.game.all_walls)
