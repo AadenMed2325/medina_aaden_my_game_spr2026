@@ -112,7 +112,7 @@ def collide_and_collect(sprite, group):
                 print("spear collected")
             sprite.weapon_equipped = True
 
-def weapon_collection(sprite, group, weapon):
+def weapon_appearance_change(sprite, group, weapon):
     if sprite.weapon_equipped == True:
         pass
 

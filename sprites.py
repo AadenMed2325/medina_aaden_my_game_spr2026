@@ -28,13 +28,13 @@ def collide_hit_rect(one, two):
 #     return one.hit_rect.colliderect(two.hit_rect)
 
 
-def draw_text(self, text, size, color, x, y):
+def draw_text(surf, text, size, color, x, y):
         font_name = pg.font.match_font('arial')
         font = pg.font.Font(font_name, size)
         text_surface = font.render(text, True, color)
         text_rect = text_surface.get_rect()
         text_rect.midtop = (x,y)
-        self.screen.blit(text_surface, text_rect)
+        surf.blit(text_surface, text_rect)
 
 def get_health(sprite, group, dir):
     hits = pg.sprite.spritecollide(sprite, group, False, collide_hit_rect)
@@ -110,21 +110,28 @@ def immobilized_state(sprite, group):
 # collision function for blocks to lose health
 def collide_with_blocks(sprite, group, kill):
     hits = pg.sprite.spritecollide(sprite, group, kill)
+    damage = 0
     if hits:
         # checks which class is getting hit by the block
         if str(hits[0].__class__.__name__) == "P1Block":
-            print("I collided with the red block")
+            #print("I collided with the red block")
             if sprite.weapon_equipped == True:
             # hits[0] refers to the group
-                hits[0].health -= 1
-            print(hits[0].health)
+                #cooldown = pg.time.get_ticks()
+                #if cooldown > 1000:
+                hits[0].health -= 0.05
+                print(hits[0].health)
+                damage += 0.05
+                if damage > 20:
+                    sprite.weapon_equipped = False
+                    print("too much damage done")
+                    #cooldown = 0
         if str(hits[0].__class__.__name__) == "P2Block":
             print("I collided with the blue block")
             if sprite.weapon_equipped == True:
             # hits[0] refers to the group
                 hits[0].health -= 1
-            hits[0].health -= 1
-            print(hits[0].health)
+                print(hits[0].health)
 
 def collide_with_stuff(sprite, group, dir):
     hits = pg.sprite.spritecollide(sprite, group, False, collide_hit_rect)
@@ -553,9 +560,8 @@ class P1Block(Sprite):
         self.groups = game.all_sprites, game.all_blocks, game.player_block
         Sprite.__init__(self, self.groups)
         self.health = 500
-        self.screen = pg.display.set_mode((WIDTH, HEIGHT))
         self.game = game
-        draw_text(self, str(self.health), 24, BLACK, (TILESIZE * TILESIZE) / 4, TILESIZE * TILESIZE - TILESIZE)
+        draw_text(game.screen, str(self.health), 24, BLACK, (TILESIZE * TILESIZE) / 4, TILESIZE * TILESIZE - TILESIZE)
         #self.image = (draw_health_bar(game.screen, 8, 8, 88, RED))
         self.image = pg.Surface((TILESIZE/2 + TILESIZE, TILESIZE))
         self.image.fill(RED)
@@ -565,6 +571,17 @@ class P1Block(Sprite):
         self.rect.center = self.pos
         self.hit_rect = BLOCK_HIT_RECT.copy()
 
+    def draw_health_bar(self, surf, x, y, pct, color):
+    # if dead
+        if pct < 0:
+            pct = 0
+        HEALTH_LENGTH = WIDTH / 2
+        HEALTH_HEIGHT = TILESIZE
+        fill = (pct/100) * HEALTH_LENGTH
+        outline_rect = pg.Rect(x, y, HEALTH_LENGTH, HEALTH_HEIGHT)
+        fill_rect = (x, y, fill, HEALTH_HEIGHT)
+        pg.draw.rect(surf, color, fill_rect)
+        pg.draw.rect(surf, WHITE, outline_rect, 2)
 
 
    
@@ -612,7 +629,19 @@ class P2Block(Sprite):
         self.pos = vec(x,y) * TILESIZE
         self.rect.center = self.pos
         self.hit_rect = BLOCK_HIT_RECT.copy()
-   
+    
+    def draw_health_bar(self, surf, x, y, pct, color):
+    # if dead
+        if pct < 0:
+            pct = 0
+        HEALTH_LENGTH = WIDTH / 2
+        HEALTH_HEIGHT = TILESIZE
+        fill = (pct/100) * HEALTH_LENGTH
+        outline_rect = pg.Rect(x, y, HEALTH_LENGTH, HEALTH_HEIGHT)
+        fill_rect = (x, y, fill, HEALTH_HEIGHT)
+        pg.draw.rect(surf, color, fill_rect)
+        pg.draw.rect(surf, WHITE, outline_rect, 2)
+    
     def update(self):
         self.rect.center = self.hit_rect.center
         self.hit_rect.centerx = self.pos.x

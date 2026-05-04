@@ -57,15 +57,15 @@ class Cooldown:
 
 
 # displays health bar on the screen
-def draw_health_bar(surf, x, y, pct, color):
-    # if dead
-    if pct < 0:
-        pct = 0
-    HEALTH_LENGTH = WIDTH / 2
-    HEALTH_HEIGHT = TILESIZE
-    fill = (pct/100) * HEALTH_LENGTH
-    outline_rect = pg.Rect(x, y, HEALTH_LENGTH, HEALTH_HEIGHT)
-    fill_rect = (x, y, fill, HEALTH_HEIGHT)
-    pg.draw.rect(surf, color, fill_rect)
-    pg.draw.rect(surf, WHITE, outline_rect, 2)
+# def draw_health_bar(surf, x, y, pct, color):
+#     # if dead
+#     if pct < 0:
+#         pct = 0
+#     HEALTH_LENGTH = WIDTH / 2
+#     HEALTH_HEIGHT = TILESIZE
+#     fill = (pct/100) * HEALTH_LENGTH
+#     outline_rect = pg.Rect(x, y, HEALTH_LENGTH, HEALTH_HEIGHT)
+#     fill_rect = (x, y, fill, HEALTH_HEIGHT)
+#     pg.draw.rect(surf, color, fill_rect)
+#     pg.draw.rect(surf, WHITE, outline_rect, 2)
 

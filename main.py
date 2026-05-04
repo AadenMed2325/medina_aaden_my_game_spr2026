@@ -157,8 +157,13 @@ class Game:
         self.all_sprites.draw(self.screen)
         #self.draw_text(str(P1Block.health), 24, GREEN, WIDTH/4, HEIGHT - TILESIZE)
         self.draw_text(str(500), 24, GREEN, WIDTH/1.33, HEIGHT - TILESIZE)
-        draw_health_bar(self.screen, 0, HEIGHT - TILESIZE, 88, RED)
-        draw_health_bar(self.screen, WIDTH / 2 + TILESIZE/2, HEIGHT - TILESIZE, 88, BLUE)
+        # draw_health_bar(self.screen, 0, HEIGHT - TILESIZE, 88, RED)
+        # draw_health_bar(self.screen, WIDTH / 2 + TILESIZE/2, HEIGHT - TILESIZE, 88, BLUE)
+        # to sync the health bar with the health
+        for block in self.player_block:
+            block.draw_health_bar(self.screen, 0, HEIGHT - TILESIZE, block.health / 5, RED)
+        for block in self.contender_block:
+            block.draw_health_bar(self.screen, WIDTH / 2 + TILESIZE/2, HEIGHT - TILESIZE, block.health / 5, BLUE)
         pg.display.flip()
 
 
