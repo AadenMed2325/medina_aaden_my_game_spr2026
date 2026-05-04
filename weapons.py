@@ -106,10 +106,13 @@ def collide_and_collect(sprite, group):
             coin.collect()
             if coin.type == "Sword":
                 print("sword collected")
+                sprite.weapon = "Sword"
             elif coin.type == "Hammer":
                 print("hammer collected")
+                sprite.weapon = "Hammer"
             else:
                 print("spear collected")
+                sprite.weapon = "Spear"
             sprite.weapon_equipped = True
 
 def weapon_appearance_change(sprite, group, weapon):

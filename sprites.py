@@ -110,28 +110,38 @@ def immobilized_state(sprite, group):
 # collision function for blocks to lose health
 def collide_with_blocks(sprite, group, kill):
     hits = pg.sprite.spritecollide(sprite, group, kill)
-    damage = 0
+    #damage = 0
     if hits:
         # checks which class is getting hit by the block
         if str(hits[0].__class__.__name__) == "P1Block":
             #print("I collided with the red block")
             if sprite.weapon_equipped == True:
             # hits[0] refers to the group
-                #cooldown = pg.time.get_ticks()
-                #if cooldown > 1000:
-                hits[0].health -= 0.05
+                if sprite.weapon == "Sword":
+                    hits[0].health -= 0.05
+                if sprite.weapon == "Hammer":
+                    hits[0].health -= 0.5
+                if sprite.weapon == "Spear":
+                    hits[0].health -= 2.5
                 print(hits[0].health)
-                damage += 0.05
-                if damage > 20:
-                    sprite.weapon_equipped = False
-                    print("too much damage done")
-                    #cooldown = 0
+                #damage += 0.05
+                #if damage > 20:
+                #sprite.weapon_equipped = False
+                    #print("too much damage done")
         if str(hits[0].__class__.__name__) == "P2Block":
-            print("I collided with the blue block")
+            #print("I collided with the blue block")
             if sprite.weapon_equipped == True:
             # hits[0] refers to the group
                 hits[0].health -= 1
                 print(hits[0].health)
+
+def damage_cooldown(sprite, group, kill):
+    hits = pg.sprite.spritecollide(sprite, group, kill)
+    if hits:
+        if sprite.weapon_equipped == True:
+            if hits > 100:
+                print('too much damage')
+
 
 def collide_with_stuff(sprite, group, dir):
     hits = pg.sprite.spritecollide(sprite, group, False, collide_hit_rect)
@@ -217,6 +227,7 @@ class Player(Sprite):
         self.moving = False
         self.frozen = False
         self.weapon_equipped = False
+        self.weapon = None
         self.freeze_time = 0
         self.freeze_duration = 3000
         # default update and first frame = 0
@@ -370,6 +381,7 @@ class Contender(Sprite):
         self.moving = False
         self.frozen = False
         self.weapon_equipped = False
+        self.weapon = None
         self.freeze_time = 0
         self.freeze_duration = 3000
         # default update and first frame = 0
