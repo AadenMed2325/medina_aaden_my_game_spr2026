@@ -558,7 +558,7 @@ class Coin(Sprite):
         #self.collection_cooldown = 0
         # ChatGPT helped me with SRCALPHA, I asked it how to turn the sprites from a square
         # to a circle
-        self.spritesheet = Spritesheet(path.join(self.game.img_dir, "weapon.sheet.png"))
+        self.spritesheet = Spritesheet(path.join(self.game.img_dir, "weapon_sheet_revised.png"))
         #self.image.set_colorkey(BLACK)
         self.image = pg.Surface((TILESIZE, TILESIZE), pg.SRCALPHA)
         draw_circle(self, GRAY)

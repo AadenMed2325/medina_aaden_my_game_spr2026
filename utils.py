@@ -29,6 +29,8 @@ class Spritesheet:
         image = pg.Surface((width, height))
         image.blit(self.spritesheet, (0,0), (x, y, width, height))
         new_image = pg.transform.scale(image, (width, height))
+        # set colorkey to make the black background transparent
+        new_image.set_colorkey(BLACK)
         image = new_image
         return image
 

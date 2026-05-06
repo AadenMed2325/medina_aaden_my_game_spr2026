@@ -66,6 +66,10 @@ class Game:
         self.map = Map(path.join(self.game_dir, 'level1.txt'))
         print('data is loaded')
 
+    # def count_ticks(self):
+    #     ticks = pg.time.get_ticks()
+        # if ticks < 5000:
+        #     print("hi!")
 
     def new(self):
         self.load_data()
@@ -115,8 +119,7 @@ class Game:
         while self.running:
             # self.dt helps with the position of the player
             self.dt = self.clock.tick(FPS) / 1000
-
-
+            #self.count_ticks()
             self.events()
             if not self.paused:
                 self.update()
@@ -166,6 +169,27 @@ class Game:
             block.draw_health_bar(self.screen, 0, HEIGHT - TILESIZE, block.health / 5, RED)
         for block in self.contender_block:
             block.draw_health_bar(self.screen, WIDTH / 2 + TILESIZE/2, HEIGHT - TILESIZE, block.health / 5, BLUE)
+        # welcome screen
+        ticks = pg.time.get_ticks()
+        if ticks < 15000:
+            self.screen.fill(CYAN)
+            if ticks < 5000:
+                self.draw_text("Welcome to War and Weaponry!", 85, WHITE, WIDTH/2, HEIGHT/4)
+                self.draw_text("Player 1 (Red) = WASD to Move!", 45, RED, WIDTH/2, HEIGHT/2)
+                self.draw_text("Player 2 (Blue) = IJKL to Move!", 45, BLUE, WIDTH/2, HEIGHT/1.5)
+            elif ticks < 11000:
+                self.draw_text("Break the Block at the Bottom of the Screen to Win!", 45, YELLOW, WIDTH/2, HEIGHT/2.5)
+            elif ticks < 12000:
+                self.draw_text("3", 135, YELLOW, WIDTH/2, HEIGHT/2.5)
+            elif ticks < 13000:
+                self.draw_text("2", 135, ORANGE, WIDTH/2, HEIGHT/2.5)
+            elif ticks < 14000:
+                self.draw_text("1", 135, RED, WIDTH/2, HEIGHT/2.5)
+            elif ticks < 15000:
+                self.draw_text("GO!", 200, RED, WIDTH/2, HEIGHT/2.5)
+
+
+
         pg.display.flip()
 
 

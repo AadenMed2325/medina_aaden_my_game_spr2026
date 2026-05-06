@@ -41,7 +41,13 @@ def weapon_spawn(sprite):
     if sprite.has_weapon:
         if total_ticks - sprite.weapon_duration > 7000 and total_ticks - sprite.weapon_duration < 10000:
                 if ((total_ticks - sprite.weapon_duration) // 250) % 2 == 0:
-                    draw_circle(sprite, WHITE)
+                    # assess the attribute of the sprite
+                    if sprite.type == "Spear":
+                        draw_circle(sprite, PURPLE)
+                    if sprite.type == "Hammer":
+                        draw_circle(sprite, ORANGE)
+                    if sprite.type == "Sword":
+                        draw_circle(sprite, GREEN)
                 else:
                     sprite.image = sprite.weapon_color.copy()
         # we set the sprite duration equal to total_ticks earlier, now 10s will pass
