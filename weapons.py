@@ -84,16 +84,20 @@ def weapon_spawn(sprite):
 
 def choose_weapon(weapon):
     # choose a random number from 1 to 3 and give me the results
+    # gets the image from the spritesheet weapon.sheet which we assigned earlier
     weapon.code = random.randint(1, 3)
     if weapon.code == 1:
         weapon.type = "Spear"
-        draw_circle(weapon, PURPLE)
+        weapon.image = weapon.spritesheet.get_image(0, 0, TILESIZE, TILESIZE)
+        #draw_circle(weapon, PURPLE)
     elif weapon.code == 2:
         weapon.type = 'Hammer'
-        draw_circle(weapon, ORANGE)
+        weapon.image = weapon.spritesheet.get_image(TILESIZE, 0, TILESIZE, TILESIZE)
+        #draw_circle(weapon, ORANGE)
     else:
         weapon.type = "Sword"
-        draw_circle(weapon, GREEN)
+        weapon.image = weapon.spritesheet.get_image(TILESIZE * 2, 0, TILESIZE, TILESIZE)
+        #draw_circle(weapon, GREEN)
    
     # keeps this info stored for the color
     weapon.weapon_color = weapon.image.copy()
@@ -104,6 +108,7 @@ def collide_and_collect(sprite, group):
     for coin in hits:
         if coin.active and coin.has_weapon:
             coin.collect()
+            # assign the type of weapon
             if coin.type == "Sword":
                 print("sword collected")
                 sprite.weapon = "Sword"

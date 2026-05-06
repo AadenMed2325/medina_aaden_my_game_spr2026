@@ -92,6 +92,8 @@ class Game:
                     # object still exists without a name
                     # call class constructor without assigning variable...when
                     Wall(self, col + 0.5, row + 0.5)
+                if tile == 'B':
+                    Obstacle(self, col + 0.5, row + 0.5)
                 if tile == 'P':
                     # self in this part of the game
                     self.player = Player(self, col + 0.5, row + 0.5)

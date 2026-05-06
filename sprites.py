@@ -117,6 +117,7 @@ def collide_with_blocks(sprite, group, kill):
             #print("I collided with the red block")
             if sprite.weapon_equipped == True:
             # hits[0] refers to the group
+            # different weapons = different damage speeds
                 if sprite.weapon == "Sword":
                     hits[0].health -= 0.05
                 if sprite.weapon == "Hammer":
@@ -132,7 +133,12 @@ def collide_with_blocks(sprite, group, kill):
             #print("I collided with the blue block")
             if sprite.weapon_equipped == True:
             # hits[0] refers to the group
-                hits[0].health -= 1
+                if sprite.weapon == "Sword":
+                    hits[0].health -= 0.05
+                if sprite.weapon == "Hammer":
+                    hits[0].health -= 0.5
+                if sprite.weapon == "Spear":
+                    hits[0].health -= 2.5
                 print(hits[0].health)
 
 def damage_cooldown(sprite, group, kill):
@@ -486,6 +492,26 @@ class Wall(Sprite):
 
     def update(self):
         pass
+
+class Obstacle(Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_sprites, game.all_walls
+        Sprite.__init__(self, self.groups)
+        self.game = game
+        self.image = game.wall_img
+        #self.image = pg.Surface((TILESIZE, TILESIZE))
+        #self.image.fill(GREEN)
+        self.rect = self.image.get_rect()
+        self.vel = vec(0,0)
+        self.pos = vec(x,y) * TILESIZE
+        self.rect.center = self.pos
+        self.hit_rect = self.rect.copy()
+    
+    def spawn_block(self):
+        on = random.randint(1, 2)
+
+    def update(self):
+        pass
            
 class Projectile(Sprite):
     def __init__(self, game, x, y):
@@ -532,6 +558,8 @@ class Coin(Sprite):
         #self.collection_cooldown = 0
         # ChatGPT helped me with SRCALPHA, I asked it how to turn the sprites from a square
         # to a circle
+        self.spritesheet = Spritesheet(path.join(self.game.img_dir, "weapon.sheet.png"))
+        #self.image.set_colorkey(BLACK)
         self.image = pg.Surface((TILESIZE, TILESIZE), pg.SRCALPHA)
         draw_circle(self, GRAY)
         # if not self.has_weapon:
