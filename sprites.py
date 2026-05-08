@@ -184,13 +184,13 @@ def collide_with_stuff(sprite, group, dir):
             #block_lose_count(group, sprite)
             #block_lose_health(sprite, group)
             #print(group.health)
-def collision_check(one, two):
-    hits = pg.sprite.spritecollide(one, two, False, collide_hit_rect)
-    if hits:
-        # from Mr. Cozort's code
-        if str(hits[0].__class__.__name__) == "P1Block":
-            print("i collided with the red block")
-        print('one-two collision successful')
+# def collision_check(one, two):
+#     hits = pg.sprite.spritecollide(one, two, False, collide_hit_rect)
+#     if hits:
+#         # from Mr. Cozort's code
+#         if str(hits[0].__class__.__name__) == "P1Block":
+#             print("i collided with the red block")
+#         print('one-two collision successful')
 
 
 def freeze_timing(sprite):
@@ -198,6 +198,7 @@ def freeze_timing(sprite):
     if sprite.frozen:
         #print('freezing active')
         current_time = pg.time.get_ticks()
+        #print(current_time)
         if current_time - sprite.freeze_time < 3000:
             sprite.vel.x = 0
             sprite.vel.y = 0
@@ -613,7 +614,7 @@ class P1Block(Sprite):
         draw_text(game.screen, str(self.health), 24, BLACK, (TILESIZE * TILESIZE) / 4, TILESIZE * TILESIZE - TILESIZE)
         #self.image = (draw_health_bar(game.screen, 8, 8, 88, RED))
         self.image = pg.Surface((TILESIZE/2 + TILESIZE, TILESIZE))
-        self.image.fill(RED)
+        self.image.fill(PINK)
         self.rect = self.image.get_rect()
         self.vel = vec(0,0)
         self.pos = vec(x,y) * TILESIZE
@@ -647,8 +648,8 @@ class P1Block(Sprite):
         # block_lose_health(self, self.game.all_players, 'y')
         # block_lose_health(self, self.game.all_contenders, 'x')
         # block_lose_health(self, self.game.all_contenders, 'y')
-        collision_check(self, self.game.all_players)
-        collision_check(self, self.game.all_contenders)
+        #collision_check(self, self.game.all_players)
+        #collision_check(self, self.game.all_contenders)
         if self.health <= 0:
             print('block destroyed')
             self.kill()
@@ -672,7 +673,7 @@ class P2Block(Sprite):
         print(self.health)
         self.game = game
         self.image = pg.Surface((TILESIZE/2 + TILESIZE, TILESIZE))
-        self.image.fill(BLUE)
+        self.image.fill(CYAN)
         self.rect = self.image.get_rect()
         self.vel = vec(0,0)
         self.pos = vec(x,y) * TILESIZE
@@ -699,8 +700,8 @@ class P2Block(Sprite):
         # block_lose_health(self, self.game.all_players, 'y')
         # block_lose_health(self, self.game.all_contenders, 'x')
         # block_lose_health(self, self.game.all_contenders, 'y')
-        collision_check(self, self.game.all_players)
-        collision_check(self, self.game.all_contenders)
+        #collision_check(self, self.game.all_players)
+        #collision_check(self, self.game.all_contenders)
         #print(self.health)
         if self.health <= 0:
             print('block destroyed')

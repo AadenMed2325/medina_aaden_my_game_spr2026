@@ -129,8 +129,8 @@ def collide_and_collect(sprite, group):
 def player_appearance_change(sprite):
     now = pg.time.get_ticks()
     if sprite.weapon_equipped == True:
-        collection_time = now - pg.time.get_ticks()
-        print(collection_time)
+        collection_time = pg.time.get_ticks()
+        print(now - collection_time)
         if sprite.id == 1:
             draw_circle(sprite, PINK)
         elif sprite.id == 2:
