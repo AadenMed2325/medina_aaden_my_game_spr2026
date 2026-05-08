@@ -234,6 +234,7 @@ class Player(Sprite):
         self.frozen = False
         self.weapon_equipped = False
         self.weapon = None
+        self.id = 1
         self.freeze_time = 0
         self.freeze_duration = 3000
         # default update and first frame = 0
@@ -365,6 +366,7 @@ class Player(Sprite):
         # hit_state(self, self.game.all_walls)
         # hit_state(self, self.game.all_walls)
         freeze_timing(self)
+        player_appearance_change(self)
 
 
 class Contender(Sprite):
@@ -388,6 +390,7 @@ class Contender(Sprite):
         self.frozen = False
         self.weapon_equipped = False
         self.weapon = None
+        self.id = 2
         self.freeze_time = 0
         self.freeze_duration = 3000
         # default update and first frame = 0
@@ -438,6 +441,7 @@ class Contender(Sprite):
         # hit_state(self, self.game.all_walls)
         # hit_state(self, self.game.all_walls)
         freeze_timing(self)
+        player_appearance_change(self)
 
 
 

@@ -126,9 +126,12 @@ def collide_and_collect(sprite, group):
                 sprite.weapon = "Spear"
             sprite.weapon_equipped = True
 
-def weapon_appearance_change(sprite, group, weapon):
+def player_appearance_change(sprite):
     if sprite.weapon_equipped == True:
-        pass
+        if sprite.id == 1:
+            draw_circle(sprite, PINK)
+        elif sprite.id == 2:
+            draw_circle(sprite, CYAN)
 
 
 
