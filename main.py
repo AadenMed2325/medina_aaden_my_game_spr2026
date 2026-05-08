@@ -178,7 +178,11 @@ class Game:
                 self.draw_text("Player 1 (Red) = WASD to Move!", 45, RED, WIDTH/2, HEIGHT/2)
                 self.draw_text("Player 2 (Blue) = IJKL to Move!", 45, BLUE, WIDTH/2, HEIGHT/1.5)
             elif ticks < 11000:
-                self.draw_text("Break the Block at the Bottom of the Screen to Win!", 45, YELLOW, WIDTH/2, HEIGHT/2.5)
+                self.draw_text("Break the Block at the Bottom of the Screen to Win!", 45, YELLOW, WIDTH/2, HEIGHT/4)
+                self.draw_text("WEAPON POWER SCALING:", 45, RED, WIDTH/2, HEIGHT/2.2)
+                self.draw_text("Orange Hammers", 35, ORANGE, WIDTH/3.6, HEIGHT/1.6)
+                self.draw_text("< Green Swords", 35, GREEN, WIDTH/2, HEIGHT/1.6)
+                self.draw_text("< Purple Spears", 35, PURPLE, WIDTH/1.4, HEIGHT/1.6)
             elif ticks < 12000:
                 self.draw_text("3", 135, YELLOW, WIDTH/2, HEIGHT/2.5)
             elif ticks < 13000:
@@ -186,7 +190,7 @@ class Game:
             elif ticks < 14000:
                 self.draw_text("1", 135, RED, WIDTH/2, HEIGHT/2.5)
             elif ticks < 15000:
-                self.draw_text("GO!", 200, RED, WIDTH/2, HEIGHT/2.5)
+                self.draw_text("GO!", 200, PINK, WIDTH/2, HEIGHT/2.5)
 
 
 

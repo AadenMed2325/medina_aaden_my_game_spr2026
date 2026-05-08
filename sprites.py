@@ -114,21 +114,26 @@ def collide_with_blocks(sprite, group, kill):
     if hits:
         # checks which class is getting hit by the block
         if str(hits[0].__class__.__name__) == "P1Block":
-            #print("I collided with the red block")
+            damage = 0
             if sprite.weapon_equipped == True:
             # hits[0] refers to the group
             # different weapons = different damage speeds
                 if sprite.weapon == "Sword":
-                    hits[0].health -= 0.05
+                    hits[0].health -= 0.1
+                    #damage += 0.1
                 if sprite.weapon == "Hammer":
-                    hits[0].health -= 0.5
+                    hits[0].health -= 0.3
+                    #damage += 0.3
                 if sprite.weapon == "Spear":
-                    hits[0].health -= 2.5
+                    hits[0].health -= 1.0
+                    #damage += 1.0
+                    print(damage)
+                    #if damage > 20:
+                        # sprite.weapon_equipped = False
+                        # draw_circle(sprite, sprite.default_color)
+                        # print("too much damage done")
                 print(hits[0].health)
                 #damage += 0.05
-                #if damage > 20:
-                #sprite.weapon_equipped = False
-                    #print("too much damage done")
         if str(hits[0].__class__.__name__) == "P2Block":
             #print("I collided with the blue block")
             if sprite.weapon_equipped == True:
