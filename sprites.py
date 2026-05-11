@@ -139,11 +139,11 @@ def collide_with_blocks(sprite, group, kill):
             if sprite.weapon_equipped == True:
             # hits[0] refers to the group
                 if sprite.weapon == "Sword":
-                    hits[0].health -= 0.05
+                    hits[0].health -= 0.1
                 if sprite.weapon == "Hammer":
-                    hits[0].health -= 0.5
+                    hits[0].health -= 0.3
                 if sprite.weapon == "Spear":
-                    hits[0].health -= 2.5
+                    hits[0].health -= 1.0
                 print(hits[0].health)
 
 def damage_cooldown(sprite, group, kill):

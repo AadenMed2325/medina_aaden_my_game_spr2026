@@ -114,6 +114,7 @@ def collide_and_collect(sprite, group):
     for coin in hits:
         if coin.active and coin.has_weapon:
             coin.collect()
+            sprite.collection_time = pg.time.get_ticks()
             # assign the type of weapon
             if coin.type == "Sword":
                 print("sword collected")
@@ -126,16 +127,26 @@ def collide_and_collect(sprite, group):
                 sprite.weapon = "Spear"
             sprite.weapon_equipped = True
 
+# pygame ai : I prompted it to differentiate now and collection_elapsed.
+# collection_elapsed takes the time that the player has the weapon
+# now is the time since the game started
 def player_appearance_change(sprite):
     now = pg.time.get_ticks()
     if sprite.weapon_equipped == True:
-        collection_time = pg.time.get_ticks()
-        print(now - collection_time)
+        collection_elapsed = now - sprite.collection_time
         if sprite.id == 1:
             draw_circle(sprite, PINK)
         elif sprite.id == 2:
             draw_circle(sprite, CYAN)
-
+        if collection_elapsed > 17000:
+            if collection_elapsed % 1000 <= 500:
+                draw_circle(sprite, WHITE)
+            if collection_elapsed > 20000:
+                sprite.weapon_equipped = False
+                if sprite.id == 1:
+                    draw_circle(sprite, RED)
+                elif sprite.id == 2:
+                    draw_circle(sprite, BLUE)
 
 
 
