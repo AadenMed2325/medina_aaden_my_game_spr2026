@@ -619,9 +619,9 @@ class CollectedWeapon(Sprite):
         self.spritesheet = Spritesheet(path.join(self.game.img_dir, "weapon_sheet_revised.png"))
         #self.image = pg.Surface((TILESIZE, TILESIZE))
         #self.image.fill(GREEN)
-        self.rect = self.image.get_rect()
+        #self.rect = self.image.get_rect()
         #self.vel = vec(0,0)
-        #self.pos = vec(x,y) * TILESIZE
+        self.pos = vec(x,y) * TILESIZE
         self.rect.center = self.pos
         #self.hit_rect = self.rect.copy()
     
