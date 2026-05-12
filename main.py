@@ -64,6 +64,8 @@ class Game:
         self.snd_dir = path.join(self.game_dir, 'sounds')
         self.welcome_music = pg.mixer.Sound(path.join(self.snd_dir, "Space Jazz.mp3"))
         self.background_music = pg.mixer.Sound(path.join(self.snd_dir, "Curse of the Scarab.mp3"))
+        self.weapon_snd = pg.mixer.Sound(path.join(self.snd_dir, "Weapon.wav"))
+        self.damage_snd = pg.mixer.Sound(path.join(self.snd_dir, "Hit.wav"))
         
 
         #self.pickup_snd = pg.mixer.Sound(path.join(self.snd_dir, "pickup.wav"))
@@ -168,14 +170,16 @@ class Game:
         #self.draw_text(str(self.player.pos), 24, WHITE, WIDTH/2, HEIGHT - TILESIZE * 3)
         self.all_sprites.draw(self.screen)
         #self.draw_text(str(P1Block.health), 24, GREEN, WIDTH/4, HEIGHT - TILESIZE)
-        self.draw_text(str(500), 24, GREEN, WIDTH/1.33, HEIGHT - TILESIZE)
+        #self.draw_text(str(block.health), 24, GREEN, WIDTH/1.33, HEIGHT - TILESIZE)
         # draw_health_bar(self.screen, 0, HEIGHT - TILESIZE, 88, RED)
         # draw_health_bar(self.screen, WIDTH / 2 + TILESIZE/2, HEIGHT - TILESIZE, 88, BLUE)
         # to sync the health bar with the health
         for block in self.player_block:
             block.draw_health_bar(self.screen, 0, HEIGHT - TILESIZE, block.health / 5, RED)
+            #self.draw_text(str(block.health // 1), 24, GREEN, WIDTH / 4, HEIGHT - TILESIZE)
         for block in self.contender_block:
             block.draw_health_bar(self.screen, WIDTH / 2 + TILESIZE/2, HEIGHT - TILESIZE, block.health / 5, BLUE)
+            #self.draw_text(str(block.health // 1), 24, GREEN, WIDTH / 1.33, HEIGHT - TILESIZE)
         # welcome screen
         ticks = pg.time.get_ticks()
         # prompted VS Code's AI: how do I get game.welcome_music to play only for the 

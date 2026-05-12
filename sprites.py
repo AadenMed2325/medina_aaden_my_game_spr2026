@@ -120,12 +120,15 @@ def collide_with_blocks(sprite, group, kill):
             # different weapons = different damage speeds
                 if sprite.weapon == "Sword":
                     hits[0].health -= 0.1
+                    sprite.game.damage_snd.play()
                     #damage += 0.1
                 if sprite.weapon == "Hammer":
                     hits[0].health -= 0.3
+                    sprite.game.damage_snd.play()
                     #damage += 0.3
                 if sprite.weapon == "Spear":
                     hits[0].health -= 1.0
+                    sprite.game.damage_snd.play()
                     #damage += 1.0
                     print(damage)
                     #if damage > 20:
@@ -140,10 +143,13 @@ def collide_with_blocks(sprite, group, kill):
             # hits[0] refers to the group
                 if sprite.weapon == "Sword":
                     hits[0].health -= 0.1
+                    sprite.game.damage_snd.play()
                 if sprite.weapon == "Hammer":
                     hits[0].health -= 0.3
+                    sprite.game.damage_snd.play()
                 if sprite.weapon == "Spear":
                     hits[0].health -= 1.0
+                    sprite.game.damage_snd.play()
                 print(hits[0].health)
 
 def damage_cooldown(sprite, group, kill):

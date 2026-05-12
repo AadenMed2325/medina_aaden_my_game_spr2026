@@ -114,6 +114,7 @@ def collide_and_collect(sprite, group):
     for coin in hits:
         if coin.active and coin.has_weapon:
             coin.collect()
+            sprite.game.weapon_snd.play()  # Play weapon collect sound
             sprite.collection_time = pg.time.get_ticks()
             # assign the type of weapon
             if coin.type == "Sword":
