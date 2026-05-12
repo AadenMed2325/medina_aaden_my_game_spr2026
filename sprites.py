@@ -609,6 +609,45 @@ class Coin(Sprite):
             collide_with_stuff(self, self.game.all_blocks, 'x')
             collide_with_stuff(self, self.game.all_blocks, 'y')
 
+class CollectedWeapon(Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_collected_weapons
+        Sprite.__init__(self, self.groups)
+        self.active = False
+        self.game = game
+        #self.image = game.wall_img
+        self.spritesheet = Spritesheet(path.join(self.game.img_dir, "weapon_sheet_revised.png"))
+        #self.image = pg.Surface((TILESIZE, TILESIZE))
+        #self.image.fill(GREEN)
+        self.rect = self.image.get_rect()
+        #self.vel = vec(0,0)
+        #self.pos = vec(x,y) * TILESIZE
+        self.rect.center = self.pos
+        #self.hit_rect = self.rect.copy()
+    
+    # aim: try to keep the collected weapon close to the Player
+    def weapon_active(self, player, coin):
+        if player.weapon_equipped == True:
+            self.pos.x = player.pos.x + 40
+            self.pos.y = player.pos.y + 40
+            self.vel = player.vel
+            if coin.type == "Spear":
+                self.image = self.spritesheet.get_image(0, 0, TILESIZE, TILESIZE)
+            if coin.type == "Hammer":
+                self.image = self.spritesheet.get_image(TILESIZE, 0, TILESIZE, TILESIZE)
+            if coin.type == "Sword":
+                self.image = self.spritesheet.get_image(TILESIZE * 2, 0, TILESIZE, TILESIZE)
+
+        else:
+            self.pos.x = 1500
+            self.pos.y = 1500
+            self.vel = vec(0,0)
+            self.image = draw_circle(self, PINK)
+    
+    def update(self):
+        self.weapon_active(self, self.game.all_players, self.game.all_coins)
+        self.weapon_active(self, self.game.all_contenders, self.game.all_coins)
+
 
 #class Block(Sprite):
 class P1Block(Sprite):
