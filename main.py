@@ -48,6 +48,9 @@ class Game:
         self.running = True
         self.playing = True
         self.paused = False
+        # self.music_started = False
+        # self.start_time = None
+        self.music_count = 0  # Initialize music_count as instance variable
         self.game_cooldown = Cooldown(5000)
    
     # a method is a function tied to a Class
@@ -59,6 +62,10 @@ class Game:
         self.img_dir = path.join(self.game_dir, 'images')
         # sound directory
         self.snd_dir = path.join(self.game_dir, 'sounds')
+        self.welcome_music = pg.mixer.Sound(path.join(self.snd_dir, "Space Jazz.mp3"))
+        self.background_music = pg.mixer.Sound(path.join(self.snd_dir, "Curse of the Scarab.mp3"))
+        
+
         #self.pickup_snd = pg.mixer.Sound(path.join(self.snd_dir, "pickup.wav"))
         # add the image
         self.wall_img = pg.image.load(path.join(self.img_dir, 'Block Pixel.png')).convert_alpha()
@@ -171,6 +178,21 @@ class Game:
             block.draw_health_bar(self.screen, WIDTH / 2 + TILESIZE/2, HEIGHT - TILESIZE, block.health / 5, BLUE)
         # welcome screen
         ticks = pg.time.get_ticks()
+        # prompted VS Code's AI: how do I get game.welcome_music to play only for the 
+        # first 15 seconds of the game's instantiation
+        # i tried a while loop for this but it just continued playing
+        
+        # Play music once at the start
+        if ticks > 1900 and self.music_count == 0:
+            print(ticks)
+            self.welcome_music.play()
+            self.music_count += 1
+        elif ticks > 15000 and self.music_count == 1:
+            print(ticks)
+            self.welcome_music.stop()
+            self.background_music.play()
+            self.music_count += 1
+        
         if ticks < 15000:
             self.screen.fill(CYAN)
             if ticks < 5000:
