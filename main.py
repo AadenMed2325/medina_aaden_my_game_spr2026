@@ -122,7 +122,10 @@ class Game:
                 if tile == 'Y':
                     P2Block(self, col + 1, row + 0.5)
                 if tile == 'W':
-                    CollectedWeapon(self, col + 1, row + 0.5)
+                    PlayerCollectedWeapon(self, col + 1, row + 0.5)
+                if tile == 'V':
+                    ContenderCollectedWeapon(self, col + 1, row + 0.5)
+
         self.run()
 
 

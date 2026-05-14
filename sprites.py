@@ -7,6 +7,7 @@ from utils import *
 from os import path
 from state_machine import *
 from weapons import *
+import math
 
 
 vec = pg.math.Vector2
@@ -609,45 +610,103 @@ class Coin(Sprite):
             collide_with_stuff(self, self.game.all_blocks, 'x')
             collide_with_stuff(self, self.game.all_blocks, 'y')
 
-class CollectedWeapon(Sprite):
+class PlayerCollectedWeapon(Sprite):
     def __init__(self, game, x, y):
-        self.groups = game.all_collected_weapons
+        self.groups = game.all_collected_weapons, game.all_sprites
         Sprite.__init__(self, self.groups)
         self.active = False
         self.game = game
         #self.image = game.wall_img
         self.spritesheet = Spritesheet(path.join(self.game.img_dir, "weapon_sheet_revised.png"))
-        #self.image = pg.Surface((TILESIZE, TILESIZE))
-        #self.image.fill(GREEN)
-        #self.rect = self.image.get_rect()
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image.fill(GREEN)
+        self.rect = self.image.get_rect()
         #self.vel = vec(0,0)
         self.pos = vec(x,y) * TILESIZE
         self.rect.center = self.pos
-        #self.hit_rect = self.rect.copy()
+        self.hit_rect = self.rect.copy()
     
     # aim: try to keep the collected weapon close to the Player
-    def weapon_active(self, player, coin):
-        if player.weapon_equipped == True:
-            self.pos.x = player.pos.x + 40
-            self.pos.y = player.pos.y + 40
-            self.vel = player.vel
-            if coin.type == "Spear":
-                self.image = self.spritesheet.get_image(0, 0, TILESIZE, TILESIZE)
-            if coin.type == "Hammer":
-                self.image = self.spritesheet.get_image(TILESIZE, 0, TILESIZE, TILESIZE)
-            if coin.type == "Sword":
-                self.image = self.spritesheet.get_image(TILESIZE * 2, 0, TILESIZE, TILESIZE)
+    def weapon_follow_player(self):
+        player_with_weapon = None
+        for player in self.game.all_players:
+            if player.weapon_equipped == True:
+                player_with_weapon = player
+                self.pos.x = player_with_weapon.pos.x + 10
+                self.pos.y = player_with_weapon.pos.y + 10
+                self.rect.center = self.pos
+                break
 
+            if player_with_weapon:
+                if player_with_weapon.weapon == "Spear":
+                    self.image = self.spritesheet.get_image(0, 0, TILESIZE, TILESIZE)
+                if player_with_weapon.weapon == "Hammer":
+                    self.image = self.spritesheet.get_image(TILESIZE, 0, TILESIZE, TILESIZE)
+                if player_with_weapon.weapon == "Sword":
+                    self.image = self.spritesheet.get_image(TILESIZE * 2, 0, TILESIZE, TILESIZE)
+
+
+            # # Rotate the weapon to face the player's movement direction
+            # if player_with_weapon.vel.length() > 0:
+            #     angle = math.degrees(math.atan2(player_with_weapon.vel.y, player_with_weapon.vel.x))
+            #     self.image = pg.transform.rotate(self.image, -angle)
+            # self.rect = self.image.get_rect(center=self.rect.center)
+
+            else:
+                self.pos.x = 1500
+                self.pos.y = 1500
+                self.vel = vec(0,0)
+                #self.image = self.game.wall_img
+                draw_circle(self, PINK)
+    
+    def update(self):
+        self.weapon_follow_player()
+
+class ContenderCollectedWeapon(Sprite):
+    def __init__(self, game, x, y):
+        self.groups = game.all_collected_weapons, game.all_sprites
+        Sprite.__init__(self, self.groups)
+        self.active = False
+        self.game = game
+        #self.image = game.wall_img
+        self.spritesheet = Spritesheet(path.join(self.game.img_dir, "weapon_sheet_revised.png"))
+        self.image = pg.Surface((TILESIZE, TILESIZE))
+        self.image.fill(GREEN)
+        self.rect = self.image.get_rect()
+        #self.vel = vec(0,0)
+        self.pos = vec(x,y) * TILESIZE
+        self.rect.center = self.pos
+        self.hit_rect = self.rect.copy()
+
+    def weapon_follow_contender(self):
+        contender_with_weapon = None
+        for contender in self.game.all_contenders:
+            if contender.weapon_equipped == True:
+                contender_with_weapon = contender
+                self.pos.x = contender_with_weapon.pos.x + 10
+                self.pos.y = contender_with_weapon.pos.y + 10
+                self.rect.center = self.pos
+                break
+            # assigns images to each coin type
+        if contender_with_weapon:
+            if contender_with_weapon.weapon == "Spear":
+                self.image = self.spritesheet.get_image(0, 0, TILESIZE, TILESIZE)
+            if contender_with_weapon.weapon == "Hammer":
+                self.image = self.spritesheet.get_image(TILESIZE, 0, TILESIZE, TILESIZE)
+            if contender_with_weapon.weapon == "Sword":
+                self.image = self.spritesheet.get_image(TILESIZE * 2, 0, TILESIZE, TILESIZE)
+        
         else:
             self.pos.x = 1500
             self.pos.y = 1500
             self.vel = vec(0,0)
-            self.image = draw_circle(self, PINK)
-    
+            #self.image = self.game.wall_img
+            draw_circle(self, PINK)
+        
     def update(self):
-        self.weapon_active(self, self.game.all_players, self.game.all_coins)
-        self.weapon_active(self, self.game.all_contenders, self.game.all_coins)
+        self.weapon_follow_contender()
 
+    
 
 #class Block(Sprite):
 class P1Block(Sprite):
