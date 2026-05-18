@@ -48,6 +48,11 @@ class Game:
         self.running = True
         self.playing = True
         self.paused = False
+        self.stage1 = False
+        self.stage2 = False
+        self.stage3 = False
+        self.player_block_alive = True
+        self.contender_block_alive = True
         # self.music_started = False
         # self.start_time = None
         self.music_count = 0  # Initialize music_count as instance variable
@@ -162,11 +167,20 @@ class Game:
     def quit(self):
         pass
 
-
+    def get_keys(self):
+        keys = pg.key.get_pressed()
+        if keys[pg.K_1]:
+            self.stage1 = True
+        if keys[pg.K_2]:
+            self.stage2 = True
+            self.prepare_time = pg.time.get_ticks()
+            
     # updates the self.all_sprites group
     def update(self):
         self.all_sprites.update()
-   
+        self.get_keys()
+    
+        
     # this method uses draw_text to draw text and display it
     def draw(self):
         self.screen.fill(IVORY)
@@ -203,26 +217,33 @@ class Game:
             self.background_music.play()
             self.music_count += 1
         
-        if ticks < 15000:
+        if not self.stage3:
             self.screen.fill(CYAN)
-            if ticks < 5000:
+            if not self.stage1:
                 self.draw_text("Welcome to War and Weaponry!", 85, WHITE, WIDTH/2, HEIGHT/4)
                 self.draw_text("Player 1 (Red) = WASD to Move!", 45, RED, WIDTH/2, HEIGHT/2)
                 self.draw_text("Player 2 (Blue) = IJKL to Move!", 45, BLUE, WIDTH/2, HEIGHT/1.5)
-            elif ticks < 11000:
+                self.draw_text("Press 1 to continue!", 45, GREEN, WIDTH/2, HEIGHT/1.25)
+            elif self.stage1 and not self.stage2:
                 self.draw_text("Break the Block at the Bottom of the Screen to Win!", 45, YELLOW, WIDTH/2, HEIGHT/4)
                 self.draw_text("WEAPON POWER SCALING:", 45, RED, WIDTH/2, HEIGHT/2.2)
                 self.draw_text("Orange Hammers", 35, ORANGE, WIDTH/3.6, HEIGHT/1.6)
                 self.draw_text("< Green Swords", 35, GREEN, WIDTH/2, HEIGHT/1.6)
                 self.draw_text("< Purple Spears", 35, PURPLE, WIDTH/1.4, HEIGHT/1.6)
-            elif ticks < 12000:
-                self.draw_text("3", 135, YELLOW, WIDTH/2, HEIGHT/2.5)
-            elif ticks < 13000:
-                self.draw_text("2", 135, ORANGE, WIDTH/2, HEIGHT/2.5)
-            elif ticks < 14000:
-                self.draw_text("1", 135, RED, WIDTH/2, HEIGHT/2.5)
-            elif ticks < 15000:
-                self.draw_text("GO!", 200, PINK, WIDTH/2, HEIGHT/2.5)
+                self.draw_text("Press 2 to continue!", 45, GREEN, WIDTH/2, HEIGHT/1.25)
+            elif self.stage1 and self.stage2:
+                if ticks - self.prepare_time < 1300:
+                    self.draw_text("3", 135, YELLOW, WIDTH/2, HEIGHT/2.5)
+                elif ticks - self.prepare_time < 2300:
+                    self.draw_text("2", 135, ORANGE, WIDTH/2, HEIGHT/2.5)
+                elif ticks - self.prepare_time < 3300:
+                    self.draw_text("1", 135, RED, WIDTH/2, HEIGHT/2.5)
+                elif ticks - self.prepare_time < 4300:
+                    self.draw_text("GO!", 200, PINK, WIDTH/2, HEIGHT/2.5)
+                elif ticks - self.prepare_time > 4300:
+                    self.stage3 = True
+
+                
 
 
 

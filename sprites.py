@@ -667,6 +667,7 @@ class PlayerCollectedWeapon(Sprite):
                 self.pos.x = player_with_weapon.pos.x + 10
                 self.pos.y = player_with_weapon.pos.y + 10
                 self.rect.center = self.pos
+
                 break
             # assigns images to each coin type
         if player_with_weapon:
@@ -677,11 +678,14 @@ class PlayerCollectedWeapon(Sprite):
             if player_with_weapon.weapon == "Sword":
                 self.image = self.spritesheet.get_image(TILESIZE * 2, 0, TILESIZE, TILESIZE)
         
+        # Copilot in Pygame explained to me that the else loop should not be nested
+        # within the for loop or the if player_with_weapon loop
+        # I prompted it, asking why the sprite stayed in the spot where the player
+        # lost its weapon
         else:
             self.pos.x = 1500
             self.pos.y = 1500
-            self.vel = vec(0,0)
-            #self.image = self.game.wall_img
+            self.rect.center = self.pos
             draw_circle(self, PINK)
         
     def update(self):
@@ -733,8 +737,7 @@ class ContenderCollectedWeapon(Sprite):
         else:
             self.pos.x = 1500
             self.pos.y = 1500
-            self.vel = vec(0,0)
-            #self.image = self.game.wall_img
+            self.rect.center = self.pos
             draw_circle(self, PINK)
         
     def update(self):
@@ -790,6 +793,7 @@ class P1Block(Sprite):
         #collision_check(self, self.game.all_contenders)
         if self.health <= 0:
             print('block destroyed')
+            self.game.player_block_alive = False
             self.kill()
         # get_health(self, self.game.all_players)
         # get_health(self, self.game.all_players)
@@ -843,6 +847,7 @@ class P2Block(Sprite):
         #print(self.health)
         if self.health <= 0:
             print('block destroyed')
+            self.game.contender_block_alive = False
             self.kill()
 
 
