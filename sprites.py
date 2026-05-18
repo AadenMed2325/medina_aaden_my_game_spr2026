@@ -72,41 +72,70 @@ def draw_circle(sprite, color):
 # leverages power of hit rect
 # checks for vertical/horizontal collision in order
 # sets position based on collision direction
-def collide_and_freeze(sprite, group, dir):
+def freeze_opponent(sprite, group):
     hits = pg.sprite.spritecollide(sprite, group, False, collide_hit_rect)
-    if hits and not sprite.frozen:
-        print("frozen")
-        sprite.frozen = True
-        sprite.freeze_time = pg.time.get_ticks()
+
+    # this assigns the other player to be the one frozen
     if hits:
-        if dir == 'x':
-            # right is positive velocity
-            if hits[0].rect.centerx > sprite.hit_rect.centerx:
-                sprite.pos.x = hits[0].rect.left - sprite.hit_rect.width / 1.7
-            # left is negative velocity
-            if hits[0].rect.centerx < sprite.hit_rect.centerx:
-                sprite.pos.x = hits[0].rect.right + sprite.hit_rect.width / 1.7
-            sprite.vel.x = 0
-            #sprite.image.fill(WHITE)
-            sprite.hit_rect.centerx = sprite.pos.x
+        other = hits[0]
+
+        if sprite.weapon_equipped and not other.weapon_equipped:
+            if not other.frozen:
+                other.frozen = True
+                other.freeze_time = pg.time.get_ticks()
+                other.vel = vec(0,0)
+                draw_circle(other, WHITE)
+        
+        if other.weapon_equipped and not sprite.weapon_equipped:
+            if not sprite.frozen:
+                sprite.frozen = True
+                sprite.freeze_time = pg.time.get_ticks()
+                sprite.vel = vec(0,0)
+                draw_circle(sprite, WHITE)
+    
+
+# def collide_and_freeze(sprite, group, dir):
+#     hits = pg.sprite.spritecollide(sprite, group, False, collide_hit_rect)
+#     if hits and not sprite.frozen and sprite.weapon_equipped:
+#         print("frozen")
+#         group.frozen = True
+#         group.freeze_time = pg.time.get_ticks()
+#     if hits:
+#         if dir == 'x':
+#             # right is positive velocity
+#             if hits[0].rect.centerx > sprite.hit_rect.centerx:
+#                 sprite.pos.x = hits[0].rect.left - sprite.hit_rect.width / 1.7
+#             # left is negative velocity
+#             if hits[0].rect.centerx < sprite.hit_rect.centerx:
+#                 sprite.pos.x = hits[0].rect.right + sprite.hit_rect.width / 1.7
+#             sprite.vel.x = 0
+#             #sprite.image.fill(WHITE)
+#             sprite.hit_rect.centerx = sprite.pos.x
 
 
-        if dir == 'y':
-            if hits[0].rect.centery > sprite.hit_rect.centery:  # moving down
-                # center of rec is half of the square higher than collision point
-                sprite.pos.y = hits[0].rect.top - sprite.hit_rect.height / 1.7
-            if hits[0].rect.centery < sprite.hit_rect.centery:  # moving up
-                sprite.pos.y = hits[0].rect.bottom + sprite.hit_rect.height / 1.7
-            sprite.vel.y = 0
-            sprite.hit_rect.centery = sprite.pos.y
+#         if dir == 'y':
+#             if hits[0].rect.centery > sprite.hit_rect.centery:  # moving down
+#                 # center of rec is half of the square higher than collision point
+#                 sprite.pos.y = hits[0].rect.top - sprite.hit_rect.height / 1.7
+#             if hits[0].rect.centery < sprite.hit_rect.centery:  # moving up
+#                 sprite.pos.y = hits[0].rect.bottom + sprite.hit_rect.height / 1.7
+#             sprite.vel.y = 0
+#             sprite.hit_rect.centery = sprite.pos.y
 
+# def collision(one, two):
+#     if one.pos.x - two.pos.x < TILESIZE and one.pos.x - two.pos.x > -TILESIZE:
+#         if one.pos.y - two.pos.y < TILESIZE and one.pos.y - two.pos.y > -TILESIZE:
+#             if one.vel > two.vel:
+#                 two.vel = vec(0,0)
+#             else:
+#                 one.vel = vec(0,0)
 
 def immobilized_state(sprite, group):
     hits = pg.sprite.spritecollide(sprite, group, False, collide_hit_rect)
     if hits and not sprite.frozen:
         print("frozen")
-        group.frozen = True
-        group.freeze_time = pg.time.get_ticks()
+        sprite.frozen = True
+        sprite.freeze_time = pg.time.get_ticks()
 
 # collision function for blocks to lose health
 def collide_with_blocks(sprite, group, kill):
@@ -153,12 +182,12 @@ def collide_with_blocks(sprite, group, kill):
                     sprite.game.damage_snd.play()
                 print(hits[0].health)
 
-def damage_cooldown(sprite, group, kill):
-    hits = pg.sprite.spritecollide(sprite, group, kill)
-    if hits:
-        if sprite.weapon_equipped == True:
-            if hits > 100:
-                print('too much damage')
+# def damage_cooldown(sprite, group, kill):
+#     hits = pg.sprite.spritecollide(sprite, group, kill)
+#     if hits:
+#         if sprite.weapon_equipped == True:
+#             if hits > 100:
+#                 print('too much damage')
 
 
 def collide_with_stuff(sprite, group, dir):
@@ -368,12 +397,13 @@ class Player(Sprite):
         collide_and_collect(self, self.game.all_coins)
         collide_with_stuff(self, self.game.all_walls, 'x')
         collide_with_stuff(self, self.game.all_blocks, 'x')
-        collide_and_freeze(self, self.game.all_contenders, 'x')
+        #collide_and_freeze(self, self.game.all_contenders, 'x')
         self.hit_rect.centery = self.pos.y
         collide_with_stuff(self, self.game.all_walls, 'y')
         collide_with_stuff(self, self.game.all_blocks, 'y')
-        collide_and_freeze(self, self.game.all_contenders, 'y')
+        #collide_and_freeze(self, self.game.all_contenders, 'y')
         collide_with_blocks(self, self.game.all_blocks, False)
+        freeze_opponent(self, self.game.all_contenders)
         self.rect.center = self.hit_rect.center
         #immobilized_state(self, self.game.all_blocks)
         # hit_state(self, self.game.all_walls)
@@ -441,14 +471,15 @@ class Contender(Sprite):
         collide_with_stuff(self, self.game.all_walls, 'x')
         collide_with_stuff(self, self.game.all_blocks, 'x')
         #collide_with_stuff(self, self.game.all_coins, 'x')
-        collide_and_freeze(self, self.game.all_players, 'x')
+        #collide_and_freeze(self, self.game.all_players, 'x')
         self.hit_rect.centery = self.pos.y
         collide_with_stuff(self, self.game.all_walls, 'y')
         collide_with_stuff(self, self.game.all_blocks, 'y')
         collide_and_collect(self, self.game.all_coins)
         #collide_with_stuff(self, self.game.all_coins, 'y')
-        collide_and_freeze(self, self.game.all_players, 'y')
+        #collide_and_freeze(self, self.game.all_players, 'y')
         collide_with_blocks(self, self.game.all_blocks, False)
+        freeze_opponent(self, self.game.all_players)
         self.rect.center = self.hit_rect.center
         immobilized_state(self, self.game.all_walls)
         # hit_state(self, self.game.all_walls)
@@ -625,9 +656,8 @@ class PlayerCollectedWeapon(Sprite):
         self.pos = vec(x,y) * TILESIZE
         self.rect.center = self.pos
         self.hit_rect = self.rect.copy()
-    
-    # aim: try to keep the collected weapon close to the Player
-    def weapon_follow_player(self):
+
+    def weapon_follow_contender(self):
         player_with_weapon = None
         for player in self.game.all_players:
             if player.weapon_equipped == True:
@@ -636,14 +666,24 @@ class PlayerCollectedWeapon(Sprite):
                 self.pos.y = player_with_weapon.pos.y + 10
                 self.rect.center = self.pos
                 break
-
-            if player_with_weapon:
-                if player_with_weapon.weapon == "Spear":
-                    self.image = self.spritesheet.get_image(0, 0, TILESIZE, TILESIZE)
-                if player_with_weapon.weapon == "Hammer":
-                    self.image = self.spritesheet.get_image(TILESIZE, 0, TILESIZE, TILESIZE)
-                if player_with_weapon.weapon == "Sword":
-                    self.image = self.spritesheet.get_image(TILESIZE * 2, 0, TILESIZE, TILESIZE)
+            # assigns images to each coin type
+        if player_with_weapon:
+            if player_with_weapon.weapon == "Spear":
+                self.image = self.spritesheet.get_image(0, 0, TILESIZE, TILESIZE)
+            if player_with_weapon.weapon == "Hammer":
+                self.image = self.spritesheet.get_image(TILESIZE, 0, TILESIZE, TILESIZE)
+            if player_with_weapon.weapon == "Sword":
+                self.image = self.spritesheet.get_image(TILESIZE * 2, 0, TILESIZE, TILESIZE)
+        
+        else:
+            self.pos.x = 1500
+            self.pos.y = 1500
+            self.vel = vec(0,0)
+            #self.image = self.game.wall_img
+            draw_circle(self, PINK)
+        
+    def update(self):
+        self.weapon_follow_contender()
 
 
             # # Rotate the weapon to face the player's movement direction
@@ -652,15 +692,7 @@ class PlayerCollectedWeapon(Sprite):
             #     self.image = pg.transform.rotate(self.image, -angle)
             # self.rect = self.image.get_rect(center=self.rect.center)
 
-            else:
-                self.pos.x = 1500
-                self.pos.y = 1500
-                self.vel = vec(0,0)
-                #self.image = self.game.wall_img
-                draw_circle(self, PINK)
-    
-    def update(self):
-        self.weapon_follow_player()
+            
 
 class ContenderCollectedWeapon(Sprite):
     def __init__(self, game, x, y):
