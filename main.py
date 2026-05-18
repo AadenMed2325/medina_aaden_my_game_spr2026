@@ -223,14 +223,18 @@ class Game:
                 self.draw_text("Welcome to War and Weaponry!", 85, WHITE, WIDTH/2, HEIGHT/4)
                 self.draw_text("Player 1 (Red) = WASD to Move!", 45, RED, WIDTH/2, HEIGHT/2)
                 self.draw_text("Player 2 (Blue) = IJKL to Move!", 45, BLUE, WIDTH/2, HEIGHT/1.5)
-                self.draw_text("Press 1 to continue!", 45, GREEN, WIDTH/2, HEIGHT/1.25)
+                self.draw_text("Press 1 to continue!", 45, YELLOW, WIDTH/2, HEIGHT/1.25)
             elif self.stage1 and not self.stage2:
                 self.draw_text("Break the Block at the Bottom of the Screen to Win!", 45, YELLOW, WIDTH/2, HEIGHT/4)
                 self.draw_text("WEAPON POWER SCALING:", 45, RED, WIDTH/2, HEIGHT/2.2)
                 self.draw_text("Orange Hammers", 35, ORANGE, WIDTH/3.6, HEIGHT/1.6)
                 self.draw_text("< Green Swords", 35, GREEN, WIDTH/2, HEIGHT/1.6)
                 self.draw_text("< Purple Spears", 35, PURPLE, WIDTH/1.4, HEIGHT/1.6)
-                self.draw_text("Press 2 to continue!", 45, GREEN, WIDTH/2, HEIGHT/1.25)
+                self.draw_text("SPAWN RATE:", 30, RED, WIDTH/8, HEIGHT/1.485)
+                self.draw_text("4/7", 40, ORANGE, WIDTH/3.6, HEIGHT/1.5)
+                self.draw_text("2/7", 40, GREEN, WIDTH/2, HEIGHT/1.5)
+                self.draw_text("1/7", 40, PURPLE, WIDTH/1.4, HEIGHT/1.5)
+                self.draw_text("Press 2 to continue!", 45, YELLOW, WIDTH/2, HEIGHT/1.3)
             elif self.stage1 and self.stage2:
                 if ticks - self.prepare_time < 1300:
                     self.draw_text("3", 135, YELLOW, WIDTH/2, HEIGHT/2.5)

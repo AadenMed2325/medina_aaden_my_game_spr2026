@@ -89,14 +89,14 @@ def weapon_spawn(sprite):
 
 
 def choose_weapon(weapon):
-    # choose a random number from 1 to 10 and give me the results
+    # choose a random number from 1 to 7 and give me the results
     # gets the image from the spritesheet weapon.sheet which we assigned earlier
-    weapon.code = random.randint(1, 10)
+    weapon.code = random.randint(1, 7)
     if weapon.code == 7:
         weapon.type = "Spear"
         weapon.image = weapon.spritesheet.get_image(0, 0, TILESIZE, TILESIZE)
         #draw_circle(weapon, PURPLE)
-    elif weapon.code <= 6:
+    elif weapon.code <= 4:
         weapon.type = 'Hammer'
         weapon.image = weapon.spritesheet.get_image(TILESIZE, 0, TILESIZE, TILESIZE)
         #draw_circle(weapon, ORANGE)

@@ -68,10 +68,7 @@ def draw_circle(sprite, color):
     pg.draw.circle(sprite.image, color, (TILESIZE // 2, TILESIZE // 2,), TILESIZE// 2)
 
 
-# function for colliding with walls
-# leverages power of hit rect
-# checks for vertical/horizontal collision in order
-# sets position based on collision direction
+# freezes other player
 def freeze_opponent(sprite, group):
     hits = pg.sprite.spritecollide(sprite, group, False, collide_hit_rect)
 
@@ -725,21 +722,22 @@ class ContenderCollectedWeapon(Sprite):
         self.hit_rect = self.rect.copy()
 
     def weapon_follow_contender(self):
-        contender_with_weapon = None
+        #contender_with_weapon = None
+        # for loop checks all of the sprites in the group
         for contender in self.game.all_contenders:
             if contender.weapon_equipped == True:
-                contender_with_weapon = contender
-                self.pos.x = contender_with_weapon.pos.x + 10
-                self.pos.y = contender_with_weapon.pos.y + 10
+                #contender_with_weapon = contender
+                self.pos.x = contender.pos.x + 10
+                self.pos.y = contender.pos.y + 10
                 self.rect.center = self.pos
                 break
             # assigns images to each coin type
-        if contender_with_weapon:
-            if contender_with_weapon.weapon == "Spear":
+        if contender:
+            if contender.weapon == "Spear":
                 self.image = self.spritesheet.get_image(0, 0, TILESIZE, TILESIZE)
-            if contender_with_weapon.weapon == "Hammer":
+            if contender.weapon == "Hammer":
                 self.image = self.spritesheet.get_image(TILESIZE, 0, TILESIZE, TILESIZE)
-            if contender_with_weapon.weapon == "Sword":
+            if contender.weapon == "Sword":
                 self.image = self.spritesheet.get_image(TILESIZE * 2, 0, TILESIZE, TILESIZE)
         
         else:
