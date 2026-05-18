@@ -94,12 +94,12 @@ def freeze_opponent(sprite, group):
                 draw_circle(sprite, WHITE)
     
 
-# def collide_and_freeze(sprite, group, dir):
+# def player_collisions(sprite, group, dir):
 #     hits = pg.sprite.spritecollide(sprite, group, False, collide_hit_rect)
-#     if hits and not sprite.frozen and sprite.weapon_equipped:
-#         print("frozen")
-#         group.frozen = True
-#         group.freeze_time = pg.time.get_ticks()
+#     # if hits and not sprite.frozen and sprite.weapon_equipped:
+#     #     print("frozen")
+#     #     group.frozen = True
+#     #     group.freeze_time = pg.time.get_ticks()
 #     if hits:
 #         if dir == 'x':
 #             # right is positive velocity
@@ -200,6 +200,7 @@ def collide_with_stuff(sprite, group, dir):
                 sprite.pos.x = hits[0].rect.right + sprite.hit_rect.width / 1.7
             sprite.vel.x = 0
             sprite.hit_rect.centerx = sprite.pos.x
+            #print("ow")
 
 
         if dir == 'y':
@@ -209,6 +210,7 @@ def collide_with_stuff(sprite, group, dir):
                 sprite.pos.y = hits[0].rect.bottom + sprite.hit_rect.height / 1.7
             sprite.vel.y = 0
             sprite.hit_rect.centery = sprite.pos.y
+            #print("oy")
         
         if str(hits[0].__class__.__name__) == "P1Block":
             pass
@@ -394,16 +396,16 @@ class Player(Sprite):
         #self.collide_with_stuff(self.game.all_players, True)
         #self.collide_with_stuff(self.game.all_blocks, True)
         self.hit_rect.centerx = self.pos.x
+        freeze_opponent(self, self.game.all_contenders)
         collide_and_collect(self, self.game.all_coins)
         collide_with_stuff(self, self.game.all_walls, 'x')
         collide_with_stuff(self, self.game.all_blocks, 'x')
-        #collide_and_freeze(self, self.game.all_contenders, 'x')
+        collide_with_stuff(self, self.game.all_contenders, 'x')
         self.hit_rect.centery = self.pos.y
         collide_with_stuff(self, self.game.all_walls, 'y')
         collide_with_stuff(self, self.game.all_blocks, 'y')
-        #collide_and_freeze(self, self.game.all_contenders, 'y')
+        collide_with_stuff(self, self.game.all_contenders, 'y')
         collide_with_blocks(self, self.game.all_blocks, False)
-        freeze_opponent(self, self.game.all_contenders)
         self.rect.center = self.hit_rect.center
         #immobilized_state(self, self.game.all_blocks)
         # hit_state(self, self.game.all_walls)
@@ -468,18 +470,18 @@ class Contender(Sprite):
         self.rect.center = self.pos
         self.pos += self.vel * self.game.dt
         self.hit_rect.centerx = self.pos.x
+        freeze_opponent(self, self.game.all_players)
         collide_with_stuff(self, self.game.all_walls, 'x')
         collide_with_stuff(self, self.game.all_blocks, 'x')
         #collide_with_stuff(self, self.game.all_coins, 'x')
-        #collide_and_freeze(self, self.game.all_players, 'x')
+        collide_with_stuff(self, self.game.all_players, 'x')
         self.hit_rect.centery = self.pos.y
         collide_with_stuff(self, self.game.all_walls, 'y')
         collide_with_stuff(self, self.game.all_blocks, 'y')
         collide_and_collect(self, self.game.all_coins)
         #collide_with_stuff(self, self.game.all_coins, 'y')
-        #collide_and_freeze(self, self.game.all_players, 'y')
+        collide_with_stuff(self, self.game.all_players, 'y')
         collide_with_blocks(self, self.game.all_blocks, False)
-        freeze_opponent(self, self.game.all_players)
         self.rect.center = self.hit_rect.center
         immobilized_state(self, self.game.all_walls)
         # hit_state(self, self.game.all_walls)
