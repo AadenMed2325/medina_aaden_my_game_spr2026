@@ -301,14 +301,18 @@ class Player(Sprite):
         if keys[pg.K_f]:
             print('I fired a projectile')
             p = Projectile(self.game, self.rect.x, self.rect.y)
-        if keys[pg.K_a]:
-            self.vel.x = -PLAYER_SPEED
-        if keys[pg.K_d]:
-            self.vel.x = PLAYER_SPEED
-        if keys[pg.K_w]:
-            self.vel.y = -PLAYER_SPEED
-        if keys[pg.K_s]:
-            self.vel.y = PLAYER_SPEED
+        if not self.game.stage3:
+            self.vel.x = 0
+            self.vel.y = 0
+        elif self.game.stage3:
+            if keys[pg.K_a]:
+                self.vel.x = -PLAYER_SPEED
+            if keys[pg.K_d]:
+                self.vel.x = PLAYER_SPEED
+            if keys[pg.K_w]:
+                self.vel.y = -PLAYER_SPEED
+            if keys[pg.K_s]:
+                self.vel.y = PLAYER_SPEED
         # if player is moving diagonally (both x and y movement does not equal zero)
         if self.vel.x != 0 and self.vel.y != 0:
             # sqrt 2 divided by 2 to represent diagonal movement
@@ -451,14 +455,18 @@ class Contender(Sprite):
         # gets key input from the user
         # wasd - up, left, down, right
         keys = pg.key.get_pressed()
-        if keys[pg.K_j]:
-            self.vel.x = -CONTENDER_SPEED
-        if keys[pg.K_l]:
-            self.vel.x = CONTENDER_SPEED
-        if keys[pg.K_i]:
-            self.vel.y = -CONTENDER_SPEED
-        if keys[pg.K_k]:
-            self.vel.y = CONTENDER_SPEED
+        if not self.game.stage3:
+            self.vel.x = 0
+            self.vel.y = 0
+        elif self.game.stage3:
+            if keys[pg.K_j]:
+                self.vel.x = -PLAYER_SPEED
+            if keys[pg.K_l]:
+                self.vel.x = PLAYER_SPEED
+            if keys[pg.K_i]:
+                self.vel.y = -PLAYER_SPEED
+            if keys[pg.K_k]:
+                self.vel.y = PLAYER_SPEED
         # if player is moving diagonally (both x and y movement does not equal zero)
         if self.vel.x != 0 and self.vel.y != 0:
             # sqrt 2 divided by 2 to represent diagonal movement
@@ -849,6 +857,7 @@ class P2Block(Sprite):
             print('block destroyed')
             self.game.contender_block_alive = False
             self.kill()
+
 
 
 

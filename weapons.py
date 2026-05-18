@@ -19,7 +19,7 @@ def weapon_spawn(sprite):
     total_ticks = pg.time.get_ticks()
     # this checks the function once every second
     # Rohnin helped me with this
-    if total_ticks - sprite.seconds > 1000:
+    if total_ticks - sprite.seconds > 1000 and sprite.game.stage3:
         sprite.seconds = total_ticks
         if not sprite.has_weapon:
             weapon_attempt = random.randint(1, 50)
@@ -89,14 +89,14 @@ def weapon_spawn(sprite):
 
 
 def choose_weapon(weapon):
-    # choose a random number from 1 to 3 and give me the results
+    # choose a random number from 1 to 10 and give me the results
     # gets the image from the spritesheet weapon.sheet which we assigned earlier
-    weapon.code = random.randint(1, 3)
-    if weapon.code == 1:
+    weapon.code = random.randint(1, 10)
+    if weapon.code == 7:
         weapon.type = "Spear"
         weapon.image = weapon.spritesheet.get_image(0, 0, TILESIZE, TILESIZE)
         #draw_circle(weapon, PURPLE)
-    elif weapon.code == 2:
+    elif weapon.code <= 6:
         weapon.type = 'Hammer'
         weapon.image = weapon.spritesheet.get_image(TILESIZE, 0, TILESIZE, TILESIZE)
         #draw_circle(weapon, ORANGE)

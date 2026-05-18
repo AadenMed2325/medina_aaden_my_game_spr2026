@@ -174,7 +174,7 @@ class Game:
         if keys[pg.K_2]:
             self.stage2 = True
             self.prepare_time = pg.time.get_ticks()
-            
+
     # updates the self.all_sprites group
     def update(self):
         self.all_sprites.update()
@@ -207,11 +207,11 @@ class Game:
         # i tried a while loop for this but it just continued playing
         
         # Play music once at the start
-        if ticks > 1900 and self.music_count == 0:
+        if not self.stage3 and self.music_count == 0:
             print(ticks)
             self.welcome_music.play()
             self.music_count += 1
-        elif ticks > 15000 and self.music_count == 1:
+        elif self.stage3 and self.music_count == 1:
             print(ticks)
             self.welcome_music.stop()
             self.background_music.play()
@@ -242,6 +242,15 @@ class Game:
                     self.draw_text("GO!", 200, PINK, WIDTH/2, HEIGHT/2.5)
                 elif ticks - self.prepare_time > 4300:
                     self.stage3 = True
+        
+        if not self.player_block_alive:
+            self.screen.fill(IVORY)
+            self.draw_text("PLAYER 1 WINS!", 50, RED, WIDTH/2, HEIGHT/2)
+        
+        if not self.contender_block_alive:
+            self.screen.fill(IVORY)
+            self.draw_text("PLAYER 2 WINS!", 50, BLUE, WIDTH/2, HEIGHT/2)
+
 
                 
 
